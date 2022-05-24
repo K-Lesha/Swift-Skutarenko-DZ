@@ -1,0 +1,108 @@
+                                                    // MARK: SWITCH
+///создать строку произвольного текста в 200 символов
+///создать цикл в нём свитч, посчитать  кол-во гласных, кол-во согласных, кол-во цифр, кол-во разных символов
+let twoHunderSymbols = "ааа, бб, в!!"
+
+var glCounter = 0
+var soglCounter = 0
+var symbCounter = 0
+
+for ch in twoHunderSymbols {
+switch ch {
+    case "а", "е", "и", "о", "у" , "э" , "ю" , "я": glCounter += 1
+    case "б", "в", "г", "д", "з", "ж", "й", "к", "л", "м", "н", "п", "р", "с", "т", "ф", "х", "ц", "ч", "ш", "щ": soglCounter += 1
+    case ",", ".", "!", "?", ":", ";" ," ": symbCounter += 1
+    default: break
+    }
+}
+
+glCounter
+soglCounter
+symbCounter
+
+///создать свитч, который будет принимать возраст человека и выводить  описание периода жизни (детство, студентчество и т.д.)
+
+let age = 191
+var status = ""
+
+switch age {
+case 0..<3: status += "ясли"
+case 4...6: status += "детсад"
+case 7...10: status += "начальная школа"
+case 11...17: status += "средняя школа"
+case 18...22: status += "студент"
+case 23...30: status += "подростает работничек"
+case 31...50: status += "в расцвете сил"
+case 51...70: status += "вокруг пенсии"
+case 70...100: status += "возраст мудрости"
+default: status += "скорее всего, такого не бывает"
+}
+status
+
+
+///есть студент: 3 строки фамилия имя и отчетсво,
+///в одном виче сделать: если его имя начинается с А или с О, то обращаться по имени
+///если отчетсво начинается с В или Д, то обращаться по имени и отчеству
+///если его фамилия начинается с Е или З, то обращаться только по фамилии,
+///если ничего из этого не сработает, то обращаться по имени, фаимилии и отчеству
+let studentName = "Alexey"
+let studentSurname = "Kovalenko"
+let fatherName = "Igorevitch"
+
+// решение препода
+switch (studentName, fatherName, studentSurname) {
+case (let name, _, _) where name.hasPrefix("A") || name.hasPrefix("O"): print("hello \(name)")
+case (_, let middle, _) where middle.hasPrefix("V") || middle.hasPrefix("D"): print("hello \(studentName) \(fatherName)")
+case (_, _, let surname) where surname.hasPrefix("E") || surname.hasPrefix("Z"): print("hello \(studentSurname)")
+default: print("hello \(studentName) \(studentSurname) \(fatherName)")
+}
+
+// моё решение
+mainLoop: for _ in 0...0 {
+    switch studentName.first {
+    case "A", "O": print("hello \(studentName)"); break mainLoop
+    default: break
+    }
+    
+    switch fatherName.first {
+    case "V", "D": print("hello \(studentName) \(fatherName)"); break mainLoop
+    default: break
+    }
+    
+    switch studentSurname.first {
+    case "E", "Z":print("hello \(studentSurname)"); break mainLoop
+    default: print("hello \(studentName) \(studentSurname) \(fatherName)"); break mainLoop
+    }
+}
+
+// решение другого студента
+var greetings = String()
+let student = (name: studentName, middlename: fatherName, surname: studentSurname)
+
+switch student {
+case _ where student.name.hasPrefix("A") || student.name.hasPrefix("O"): greetings = student.name
+case _ where student.middlename.hasPrefix("V") || student.middlename.hasPrefix("D"): greetings = student.name + " " + student.middlename
+case _ where student.surname.hasPrefix("E") || student.surname.hasPrefix("Z"): greetings = student.surname
+default: greetings = student.name + " " + student.middlename + " " + student.surname
+}
+print("hello ", greetings)
+
+
+///поле морского боя 10х10
+///осталось несколько кораблей,
+///создать свитч, который получает тюпл поинт (х, у)
+///вернуть одно из трёх значений: вернуть мимо, либо ранил, либо убил
+
+let korabl = ((x: 1, y: 9))
+let korab2 = ((x: 2, y: 9), (x: 3, y: 9))
+
+let shoot = (x: 3, y: 8)
+
+var statusKorabl = ""
+switch shoot {
+    case _ where  (shoot.x == korabl.x && shoot.y == korabl.y): statusKorabl = "ubil";
+    case _ where  ((shoot.x == korab2.0.x && shoot.y == korab2.0.y) || (shoot.x == korab2.1.x && shoot.y == korab2.1.y)): statusKorabl = "popal"
+    case _ where statusKorabl == "": statusKorabl = "mimo"
+default: break
+}
+statusKorabl
