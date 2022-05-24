@@ -1,0 +1,85 @@
+               // MARK: DICTIONARY
+/// создать словарь, как журнал студентов, ключ = имя и фамилия студента, значение = его оценка за какую-то контрольную. сделать 5 студентов.
+var studentsJournal: [String: Int] = [:]
+studentsJournal = ["Lesha Kovalenko": 10, "Lidia Bondarenko": 30, "Nastya Dyakova": 6, "Misha Krupin": 9, "Guf": 3]
+studentsJournal
+/// двум студентам повысить оценку
+studentsJournal["Lesha Kovalenko"] = 20
+studentsJournal.updateValue(31, forKey: "Lidia Bondarenko")
+/// добавить ещё 3 студента
+studentsJournal["Slim"] = 16
+studentsJournal.updateValue(100, forKey: "Robot Ivan")
+studentsJournal["Morti"] = 1
+studentsJournal
+/// удалить 2 студента
+studentsJournal["Slim"] = nil
+studentsJournal.removeValue(forKey: "Morti")
+studentsJournal
+/// посчитать общий балл группы (сумму всех оценок)
+var sumOfStudents = 0
+for (_, value) in studentsJournal {
+    sumOfStudents += value
+}
+sumOfStudents
+/// посчитать средний балл группы
+var middleSum: Double = 0
+for (_, value) in studentsJournal {
+    middleSum += Double(value)
+}
+middleSum /= Double(studentsJournal.count)
+middleSum
+
+
+/// создать словарь дни в месяцах, ключ = месяц, значение = кол-во дней
+var monthDict: [String: Int] = [:]
+
+for value in 0..<daysInMonses.count {
+    monthDict.updateValue(daysInMonses[value], forKey: nameOfMonthes[value])
+}
+monthDict
+/// вывести это на экран используя циклы и тюпл в нём (индекс. валюэ)
+//for (nameMonth, days) in monthDict {
+//    print ("В \(nameMonth) \(days) дней")
+//}
+/// вывести на экран используя цикл, но пройтися по массиву ключей  dict.keys, брать значения дикшионари, выводить пару
+for key in monthDict.keys {
+    print ("В \(key) \(monthDict[key]!) дней")
+}
+print ("_______________________________")
+
+
+
+///задание про шахматы. создать словарь, ключ = адрес ячейки (а1, а2, б3 и т.д.), а значени bool (true, если белое, false, если черное)
+///
+///создать это через цикл в цикле (x: y:)
+///1 массив это цифры от 1 до 8
+///1 массив это буквы от a до h
+///
+let chessLetters: [String] = ["a", "b", "c", "d", "e", "f", "g", "h"]
+var chessNumbers: [Int] = []
+for number in 1...8 {
+    chessNumbers.append(number)
+}
+chessNumbers
+var chessDict: [String: Bool] = [:]
+
+var x = 0
+var y = 0
+
+for value in 0..<chessNumbers.count {
+    x += 1
+    for value2 in 0..<chessNumbers.count {
+        y += 1
+        print ((x % 2) == (y % 2))
+        chessDict.updateValue(((x % 2) == (y % 2) ? true : false), forKey: (chessLetters[value] + String(chessNumbers[value2])))
+    }
+    y = 0
+}
+chessDict
+
+
+if chessDict["b1"] == true {
+    print ("ячейка белая")
+} else {
+    print ("ячейка черная")
+}
