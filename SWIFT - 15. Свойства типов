@@ -1,0 +1,192 @@
+  // MARK: свойства типов
+
+/// №1 пройти главу от эпла
+
+
+
+///№2  сделать структуру "описание файла", должны бысть свойства
+/// путь к файлу
+/// имя файла
+/// максимальный размер файла на диске
+/// путь к папке, содержащей файл
+/// тип файла (скрытый или не скрытый)
+/// содержимое файла (Строка)
+///
+/// какие должны быть лэйзи, какие должны быть свойствами экземпляров, какие должны быть свойствами класса
+
+
+struct FileDescription {
+    var pathToDrive : Drives
+    var pathToFolder : String
+    var fileName : String
+    var pathToFile: String {
+        return "\(self.pathToFolder)/\(self.fileName)"
+    }
+    
+    static var maxValue : Int = Int.max
+    
+    var isVisible: Bool = true
+    
+    lazy var fileContent : String = ""
+
+    enum Drives {
+        case C
+        case D
+        case F
+    }
+}
+
+var file1 = FileDescription(pathToDrive: .C, pathToFolder: "Folder10/Folder12", fileName: "filename.txt")
+file1.fileContent = "sad boy"
+
+
+///№3 сделать цветовую гамму (цвета радуги), энум должен быть типа ИНТ, то есть каждому элементу энума соответствует трёхбайтное значение цвета
+///сделать три свойства типу:
+///кол-во цветов в гамме
+///начальный цвет
+///конечный цвет
+
+enum Colors : Int, CaseIterable {
+    case red = 0xFF0000
+    case orange = 0xFFA500
+    case yellow = 0xFFFF00
+    case green = 0x008000
+    case lightBlue = 0x00FFFF
+    case blue = 0x0000FF
+    case violet = 0xC71585
+
+    static var casesArray = Colors.allCases
+    static var casesCount = casesArray.count
+    static var first = casesArray.first
+    static var last = casesArray.last
+
+}
+
+Colors.casesArray
+Colors.casesCount
+Colors.first
+Colors.last
+
+/// №4 сделать class человек, имя фамилия, возраст, вес, рост, максимальный/минимальный вес, максимальный/минимальный рост, максимальный/минимальный возраст, максимальная/минимальная длина имени и фамилии
+/// создать свойство в классе, которое будет осздержать кол-во созданных объектов этого класса
+
+class Person {
+    
+   static var nameLenght = 30
+    var name : String {
+        didSet (oldName) {
+            if name.count > Person.nameLenght {
+                name = oldName
+            }
+            name = name.capitalized
+            print ("old name was \(oldName), new name will be \(name)")
+        }
+    }
+    var surname: String {
+        didSet (oldSurname) {
+            if surname.count > Person.nameLenght {
+                surname = oldSurname
+            }
+            surname = surname.capitalized
+            print ("old surname was \(oldSurname), new surname will be \(surname)")
+        }
+    }
+    
+    var fullname : String {
+        get {
+            return name + " " + surname
+        }
+        set {
+           let words = newValue.components(separatedBy: " ")
+            switch words.count {
+            case 1:
+                name = words[0]
+            case 2:
+                name = words[0]
+                surname = words[1]
+            default: print("incorrect name and surname")
+            }
+        }
+    }
+    
+    var birthday = Date(DD: 00, MM: 00, YYYY: 0000) {
+        didSet  {
+            if birthday.YYYY < 1940 {
+                birthday = oldValue
+                print ("This date is not possible to set")
+            }
+        }
+    }
+    
+    var howManyYears : String {
+        get {
+            return countYearsMonthesDays (startDate: birthday, endDate: today)
+        }
+        
+    }
+    
+    static var maxwight = 200
+    static var minweight = 1
+    var weight : Int {
+        didSet (oldValue) {
+            if weight > Person.maxwight || weight < Person.minweight {
+                weight = oldValue
+                print("persons weight wasn't changed")
+            }
+        }
+    }
+    
+    static var maxheight = 300
+    static var minheight = 1
+    var height : Int {
+        didSet (oldValue) {
+            if height > Person.maxheight || height < Person.minheight {
+                height = oldValue
+                print("persons height wasn't changed")
+            }
+        }
+    }
+    
+    static var personsCounter = 0
+        
+    init (name: String, surname: String, birthday: Date, weight: Int, height: Int) {
+        self.name = name
+        self.surname = surname
+        self.birthday = birthday
+        self.weight = weight
+        self.height = height
+        Person.personsCounter += 1
+    }
+    
+}
+
+let person1 = Person(name: "Alexey", surname: "Kovalenko", birthday: Date(DD: 05, MM: 10, YYYY: 1993), weight: 65, height: 185)
+let person2 = Person(name: "Alexey", surname: "Kovalenko", birthday: Date(DD: 05, MM: 10, YYYY: 1993), weight: 65, height: 185)
+
+
+person1.name
+person1.surname
+person1.birthday
+person1.howManyYears
+person1.weight
+person1.height
+Person.personsCounter
+
+
+person1.name = "flbefbrfuweybt54obgo4bgo54bg45bg45g45g45g45g45g45g45g45g45g45g45g45g45g45g45gwe"
+person1.surname = "flbefbrfuweybt54obgo4bgo54bg45bg45g45g45g45g45g45g45g45g45g45g45g45g45g45g45gwe"
+
+person1.height = 0
+person1.height = 400
+person1.weight = 0
+person1.weight = 500
+
+person1.birthday = Date(DD: 05, MM: 10, YYYY: 1985)
+person1.howManyYears
+person1.birthday = Date(DD: 05, MM: 10, YYYY: 1930)
+person1.birthday
+person1.howManyYears
+
+
+var number = min(13, 12)
+number
