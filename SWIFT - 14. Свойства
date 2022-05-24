@@ -1,0 +1,164 @@
+ // MARK: свойства классов
+/// повторить всё что сделал Скутаренко самостоятельно, воспроизвести (stored property, computed proberty), когда можно убрать "get", какие переменные можно передвать в didSet, willSet, get, set
+/// для этого студента поставить дату рождения (структурой), содержит: день, месяц и год, добавить  компьютед проперти — посчитать сколько студенту лет
+/// добавить сколько студент учился (количество лет минус 6), если студенту меньше чем 6, тогда не уходить в 0
+
+//структура ДАТА
+struct Date {
+    var DD : Int
+    var MM : Int
+    var YYYY : Int
+    }
+var today = Date(DD: 12, MM: 05, YYYY: 2022)
+
+// функция подсчета дней
+func countYearsMonthesDays (startDate: Date, endDate: Date) -> String {
+    var years : Int
+    var monthes : Int
+    var days: Int
+    
+    years = endDate.YYYY - startDate.YYYY
+    if years < 0 {
+        years = 0
+        monthes = 0
+        days = 0
+    }
+    
+    monthes = endDate.MM - startDate.MM
+    if monthes < 0 {
+        years -= 1
+        monthes = monthes + 12
+    }
+    
+    days = endDate.DD - startDate.DD
+    if days < 0 {
+        monthes -= 1
+        days = days + 30
+    }
+
+    return "\(years)"
+//    "с даты \(startDate) по \(endDate) прошло \(years) years, \(monthes) monthes and \(days) days"
+}
+
+// структура Human
+struct Human {
+    
+    var name : String {
+        didSet (oldName) {
+            name = name.capitalized
+            print ("old name was \(oldName), new name will be \(name)")
+        }
+    }
+    var surname: String {
+        didSet (oldSurname) {
+            surname = surname.capitalized
+            print ("old surname was \(oldSurname), new surname will be \(surname)")
+        }
+    }
+    
+    var fullname : String {
+        get {
+            return name + " " + surname
+        }
+        set {
+           let words = newValue.components(separatedBy: " ")
+            switch words.count {
+            case 1:
+                name = words[0]
+            case 2:
+                name = words[0]
+                surname = words[1]
+            default: print("incorrect name and surname")
+            }
+        }
+    }
+    
+    var birthday = Date(DD: 00, MM: 00, YYYY: 0000)
+    var studyingStart = Date(DD: 00, MM: 00, YYYY: 0000)
+    
+    var howManyYears : String {
+        return countYearsMonthesDays (startDate: birthday, endDate: today)
+    }
+
+    var howManyStudied : String {
+        return countYearsMonthesDays (startDate: studyingStart, endDate: today)
+    }
+}
+
+// экземпляр Human
+var human = Human(name: "Lida", surname: "Bondarinko")
+human.surname
+human.name
+human.fullname
+
+// работа с экземпляром
+
+//human.name = "lidiia"
+//human.surname = "bOdarkenko"
+//human.fullname
+human.fullname = "lidiya bondarenko"
+human.name
+human.surname
+human.birthday = Date(DD: 24, MM: 12, YYYY: 1991)
+human.studyingStart = Date(DD: 01, MM: 09, YYYY: 1997)
+
+print("Со дня рождения: " + human.howManyYears)
+print("Учебных лет: " + human.howManyStudied)
+
+/// создать структуру "отрезок", две внутренние структуры с точками (точка а и точка б, это сторед пропертис), должны быть 2 компбютед пропертис:
+/// 1. мид поинт - точка между двумя точками
+/// 2. длина отрезка
+
+// создаю структура для установки отрезка
+struct lineSegment {
+    var x : Double
+    var y : Double
+    
+    // расчет мидпоинта
+    var midpoint: Double {
+        get {
+            return (x + y) / 2
+        }
+        /// если я двигаю мидпоинт, то и точка а и точка б должны перенестись, сдвинуться на тот же вектор, на который сдвинулся мидпоинт
+        set  {
+            let difference: Double = newValue - midpoint
+                x += difference
+                y += difference
+        }
+    }
+    
+    // расчет длины
+    var lenght : Double {
+        get {
+            if x > y {
+                return x - y
+            } else {
+                return y - x
+            }
+        }
+        /// если я хочу установить длину, то я хочу чтобы точка б сдвинулась
+        set {
+            y = x
+            y += newValue
+        }
+    }
+}
+
+// делаю экземпляр отрезка
+var line = lineSegment(x: 4, y: 6)
+// смотрю где мидпоинт
+line.midpoint
+// даю свой мидпоинт
+line.midpoint = 7
+// проверяю изменилось ли
+line.midpoint
+// проверяю правильность точек
+line
+// смотрю длину
+line.lenght
+// устанавливаю свою длину
+line.lenght = 4
+// проверяю длину
+line.lenght
+// проверяю точки
+line
