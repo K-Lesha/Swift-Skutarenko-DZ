@@ -1,0 +1,28 @@
+   // пересчитать 5 опциональных констант констант, используя ??  , два разных случая, первый используя интерполяцию тсрок, второе используя контотанацию строки
+
+let сcontOne = 1
+let cсonstTwo = "1"
+let cсonstThree = "asdasd"
+let cсonstFour = 1
+let сconstFive = "asd2"
+
+
+let csumOfConst = сcontOne + (Int(cсonstTwo) ?? 0) + (Int(cсonstThree) ?? 0) + cсonstFour + (Int(сconstFive) ?? 0)
+
+    // посмотреть какие character есть, выбрать 5 самых классных character в интернете, посчитать её длину с помощью countElements и .lenght
+
+let characters = "\u{2121}+79296144934\u{2693}\u{E9}\u{20DD}\u{1112}\u{1161}\u{11AB}"
+characters.count
+
+    // использовать цикл for, испольуя весь английский алфавит , найти индекс буквы в алфавите
+let alphabet = "abcdefghijklmnopqrstuvwxyz"
+var index = 0
+let search : Character = "e"
+
+for char in alphabet {
+    if search == char {
+        print("index of \(search) = \(index)")
+    }
+    index += 1
+}
+print ("_______________________________")
