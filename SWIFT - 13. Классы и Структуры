@@ -1,0 +1,211 @@
+// MARK: Структуры и классы
+
+/// 1. сделать структуру Студент, у него есть имя, фамилия, год рождения, средний балл оценок
+/// сделать несколько экземпляров, заполнить их данными
+/// положить всех в массив (журнал)
+/// написать функцию, которая вывод в консоль данные студентов (имя, фамилия, воззраст и средний балл), перед каждым студентом ставить номер по списку
+
+struct Student {
+    var name : String
+    var surname: String
+    var borthYear: Int
+    var middleMark : Int
+}
+
+let student1 = Student(name: "Alex", surname: "Kovalenko", borthYear: 1993, middleMark: 4)
+let student2 = Student(name: "Lidia", surname: "Bondarenko", borthYear: 1991, middleMark: 5)
+let student3 = Student(name: "Andrey", surname: "Shandos", borthYear: 1995, middleMark: 4)
+let student4 = Student(name: "Ekaterina", surname: "Spiridonova", borthYear: 1995, middleMark: 5)
+let student5 = Student(name: "Elena", surname: "Steyn", borthYear: 2000, middleMark: 3)
+let student6 = Student(name: "Sveta", surname: "Steyn", borthYear: 1981, middleMark: 5)
+
+let journal = [student1, student2, student3, student4, student5, student6]
+
+func studentsInfo (_ journal: [Student]) -> Void {
+    var counter = 1
+    for student in journal {
+        print("\(counter). \(student.name) \(student.surname) are \(2022 - student.borthYear), middle mark is \(student.middleMark)")
+        counter += 1
+    }
+    print ("_________________")
+}
+print("без сортировки")
+
+//studentsInfo(journal)
+
+/// использовать функцию сортед отсортировать массив по среднему баллу , по убыванию. самый высокий балл сверху.
+///распечатать с порядковым номером
+
+print("сортировка по лучшей оценке")
+
+let journalSorted =
+journal.sorted() { a1, a2 -> Bool in
+    if a1.middleMark > a2.middleMark {
+        return true
+    } else {
+        return false
+    }
+}
+//studentsInfo(journalSorted)
+
+/// отсортировать массив по возрастанию фамилий (создать пару студентов с одинаковыми фамилиями, если так, то сортировка по имени)
+/// распечатать с порядковым номером
+
+print("сортировка по фамилии, вторичная по имени")
+let journalSortedV2 =
+journal.sorted() { a1, a2 -> Bool in
+    switch (a1, a2) {
+    case (let studetn1, let studetn2) where studetn1.surname.first! < studetn2.surname.first!: return true
+    case (let studetn1, let studetn2) where studetn1.surname.first! == studetn2.surname.first!: return studetn1.name.first! < studetn2.name.first!
+        default: return false
+    }
+}
+//studentsInfo(journalSortedV2)
+
+
+/// 2. сделать константу и присвоить ей этот существующий массив студентов
+/// в этом массиве менять значения, установить всем 0
+/// сравнить 2 массива
+
+var journalCopy = journal
+
+for student in 0..<journalCopy.count {
+    journalCopy[student].middleMark = 0
+}
+
+journalCopy
+journal
+
+/// сделать шахматную доску на классах и структурах
+
+// создание классы фигуры
+class Figure {
+    
+    enum Figures { // фигуры
+    case King  // король
+    case Queen  // королева
+    case wBishop  // слон
+    case bBishop  // слон
+    case Knight  // конь
+    case Rook  // ладья
+    case Pawn  // пешка
+    }
+    
+    enum Color: String {
+    case Black
+    case White
+    }
+
+    let figure : Figures
+    let color : Color
+    let icon : String
+    
+    init (figure: Figures, color: Color, icon: String) {
+        self.figure = figure // self. указывает на текущий экземпляр класса
+        self.color = color
+        self.icon = icon
+    }
+}
+
+   // класс клетки на поле
+class PlateCell {
+    var figure : Figure?
+    var icon: String = ""
+    var defaultIcon : String
+    
+    init (_ defaultIcon: String) {
+        self.defaultIcon = defaultIcon
+    }
+    
+    func getIcon () -> String {
+        switch self.figure {
+        case let figure where figure != nil:
+            icon = (self.figure?.icon)!
+            return icon
+        case let figure where figure == nil:
+            icon = defaultIcon
+            return icon
+        default:
+            return icon
+        }
+    }
+}
+
+// инициализация пустой доски без фигур
+
+    let (a1, a2, a3, a4, a5, a6, a7, a8,
+         b1, b2, b3, b4, b5, b6, b7, b8,
+         c1, c2, c3, c4, c5, c6, c7, c8,
+         d1, d2, d3, d4, d5, d6, d7, d8,
+         e1, e2, e3, e4, e5, e6, e7, e8,
+         f1, f2, f3, f4, f5, f6, f7, f8,
+         g1, g2, g3, g4, g5, g6, g7, g8,
+         h1, h2, h3, h4, h5, h6, h7, h8) = (PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"),PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"),PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"), PlateCell("⬜"), PlateCell("⬛️"))
+
+// инициализация фигур
+
+let whiteKing = Figure(figure: .King, color: .White, icon: "🤴🏻")
+let whiteQueen = Figure(figure: .Queen, color: .White, icon: "👸🏻")
+let whiteWBishop = Figure(figure: .wBishop, color: .White, icon: "🖕🏻")
+let whiteBBishop = Figure(figure: .bBishop, color: .White, icon: "🖕🏻")
+let whiteKnight1 = Figure(figure: .Knight, color: .White, icon: "🐈")
+let whiteKnight2 = Figure(figure: .Knight, color: .White, icon: "🐈")
+let whiteRook1 = Figure(figure: .Rook, color: .White, icon: "🏥")
+let whiteRook2 = Figure(figure: .Rook, color: .White, icon: "🏥")
+let whitePawn1 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn2 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn3 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn4 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn5 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn6 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn7 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+let whitePawn8 = Figure(figure: .Pawn, color: .White, icon: "🕴🏻")
+
+let blackKing = Figure(figure: .King, color: .Black, icon: "🤴🏿")
+let blackQueen = Figure(figure: .Queen, color: .Black, icon: "👸🏿")
+let blackWBishop = Figure(figure: .wBishop, color: .Black, icon: "🖕🏿")
+let blackBBishop = Figure(figure: .bBishop, color: .Black, icon: "🖕🏿")
+let blackKnight1 = Figure(figure: .Knight, color: .Black, icon: "🐈‍⬛")
+let blackKnight2 = Figure(figure: .Knight, color: .Black, icon: "🐈‍⬛")
+let blackRook1 = Figure(figure: .Rook, color: .Black, icon: "🏯")
+let blackRook2 = Figure(figure: .Rook, color: .Black, icon: "🏯")
+let blackPawn1 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn2 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn3 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn4 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn5 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn6 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn7 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+let blackPawn8 = Figure(figure: .Pawn, color: .Black, icon: "🕴🏿")
+
+func startPlate () {
+    (h1.figure, h2.figure, h3.figure, h4.figure, h5.figure, h6.figure,  h7.figure, h8.figure,
+     g1.figure, g2.figure, g3.figure, g4.figure, g5.figure, g6.figure,  g7.figure, g8.figure,
+     a1.figure, a2.figure, a3.figure, a4.figure, a5.figure, a6.figure,  a7.figure, a8.figure,
+     b1.figure, b2.figure, b3.figure, b4.figure, b5.figure, b6.figure,  b7.figure, b8.figure) =
+    (whiteRook1, whiteKnight1, whiteWBishop, whiteQueen, whiteKing, whiteBBishop, whiteKnight2, whiteRook2,
+     whitePawn1, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8,
+     blackRook1, blackKnight1, blackBBishop, blackQueen, blackKing, blackWBishop, blackKnight2, blackRook2,
+     blackPawn1, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8)
+}
+func platePrint() {
+print ("\n", "  1", "  2", " 3", " 4", " 5", " 6", " 7", " 8",
+       "\n", "a", a1.getIcon(), a2.getIcon(), a3.getIcon(), a4.getIcon(), a5.getIcon(), a6.getIcon(), a7.getIcon(), a8.getIcon(),
+       "\n", "b", b1.getIcon(), b2.getIcon(), b3.getIcon(), b4.getIcon(), b5.getIcon(), b6.getIcon(), b7.getIcon(), b8.getIcon(),
+       "\n", "c", c1.getIcon(), c2.getIcon(), c3.getIcon(), c4.getIcon(), c5.getIcon(), c6.getIcon(), c7.getIcon(), c8.getIcon(),
+       "\n", "d", d1.getIcon(), d2.getIcon(), d3.getIcon(), d4.getIcon(), d5.getIcon(), d6.getIcon(), d7.getIcon(), d8.getIcon(),
+       "\n", "e", e1.getIcon(), e2.getIcon(), e3.getIcon(), e4.getIcon(), e5.getIcon(), e6.getIcon(), e7.getIcon(), e8.getIcon(),
+       "\n", "f", f1.getIcon(), f2.getIcon(), f3.getIcon(), f4.getIcon(), f5.getIcon(), f6.getIcon(), f7.getIcon(), f8.getIcon(),
+       "\n", "g", g1.getIcon(), g2.getIcon(), g3.getIcon(), g4.getIcon(), g5.getIcon(), g6.getIcon(), g7.getIcon(), g8.getIcon(),
+       "\n", "h", h1.getIcon(), h2.getIcon(), h3.getIcon(), h4.getIcon(), h5.getIcon(), h6.getIcon(), h7.getIcon(), h8.getIcon())
+}
+func movefigure (_ startPoint: PlateCell, _ nextPoint: PlateCell) -> Void {
+    nextPoint.figure = startPoint.figure
+    startPoint.figure = nil
+    }
+
+
+startPlate()
+movefigure(g1, f1)
+movefigure(b7, d7)
+platePrint()
