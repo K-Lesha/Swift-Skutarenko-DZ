@@ -1,0 +1,259 @@
+
+    // MARK: METHODS
+///создать тип КОМНАТА, есть высота и ширина
+///создать тип Персонаж, есть х, есть y = это его координата в комнате, добавить пару свойств (имя, ещё что- нибудь)
+///функция -)распечатает комнату и персонажа в ней, границы и персонаж внутри
+
+
+///персонажу добавить метод идти: энум влево, вправо, вверх, вниз
+///с помощью метода moveto — передавать персонажу направление, персонаж двигается по комнате, показать это в консоли
+///правило — персонаж не может выйти за пределы комнаты
+
+
+///создать тип ЯЩИК, координаты х и y.
+///возможность персонажа дойти до ящика, и толкнуть ящик
+///но не персонаж, ни ящик не должны выйти за пределы комнаты
+
+
+///добавить цель , точку, в которую персонажу нужно ящик доталкать
+
+///можно сделать массив ящиков и все их дотащить до этой точки
+
+
+
+// тип объекта в клетке
+class Object {
+    var coordinate : (x: Int, y: Int)
+    var icon : String
+    
+    init (coordinate: (x: Int, y: Int), icon: String) {
+        self.coordinate = coordinate
+        self.icon = icon
+    }
+}// конец типа Object
+
+
+// тип игровой ячейки
+struct Cell {
+    var coordinate : (x: Int, y: Int)
+    var object : Object?
+    var icon: String {
+        get {
+            if self.object != nil {
+                return self.object!.icon
+            } else {
+                return "⬜️"
+            }
+        }
+    }
+} // конец типа игровой ячейки
+
+// Тип игровой комнаты с методами передвижения по комнате
+struct Room {
+    var width : Int
+    var lenght: Int
+    var room : [Cell] = []
+    
+    // метод Room — Создания массива комнаты
+    mutating func create () {
+         for n in 1...self.width {
+             for m in 1...self.lenght {
+                 self.room.append(Cell(coordinate: (x: n, y: m), object: nil))
+            }
+        }
+    }
+    
+    // метод Room — Печать поля
+    mutating func print ()  {
+        var tempString = ""
+        for element in room {
+            tempString.append(element.icon)
+        }
+        Swift.print( String(tempString.enumerated().map { $0 > 0 && $0 % 10 == 0 ? ["\n", $1] : [$1]}.joined()) )
+    }
+
+    
+    // метод Room — функция добавления объекта в комнату на ячейку
+    mutating func placeToTheRoom (object: Object) {
+        for number in 0..<room.count {
+            if room[number].coordinate == object.coordinate {
+                room[number].object = object
+            }
+        }
+    }
+    
+    
+        // Направления движения для следущего метода
+    enum Direction {
+        case left, right, bottom, top
+    }
+
+    
+    // функция передвижения объекта по комнате
+    mutating func move(object: Object, direction: Direction) -> Direction? {
+        let oldCoordinates = object.coordinate
+        
+        // направления движения
+        switch direction {
+        case .left : object.coordinate.y -= 1
+        case .right : object.coordinate.y += 1
+        case .bottom : object.coordinate.x += 1
+        case .top : object.coordinate.x -= 1
+        }
+        
+        // условия не выхода за пределы комнаты
+        if object.coordinate.y < 1 || object.coordinate.y > 10 {
+            object.coordinate.y = oldCoordinates.y
+        } else if object.coordinate.x < 1 || object.coordinate.x > 10 {
+            object.coordinate.x = oldCoordinates.x
+        }
+        
+        // условия ненаступания на бокс
+        for cell in 0..<room.count {
+            if room[cell].coordinate == object.coordinate {
+                if room[cell].object != nil {
+                    object.coordinate = oldCoordinates
+                    return nil
+                }
+            }
+        }
+
+
+        // обнуляю объект в предыдущем значение ячейки
+        for cell in 0..<room.count {
+            if room[cell].coordinate == oldCoordinates {
+                room[cell].object = nil
+            }
+        }
+
+        // добавляю персонажа в новую ячейку
+        placeToTheRoom(object: object)
+        
+        // возвращаю дирекшн, если ход получился, возвращаю нил, если ход не получился
+        if oldCoordinates == object.coordinate {
+            return nil
+        } else {
+            return direction
+        }
+        
+    } // конец функции передвижения
+    
+    
+    // функция передвижения двух предметов по комнате
+    mutating func moveThe(box: Object, by pers: Object, inDir: Direction) -> Direction? {
+        
+       
+        if pers.coordinate.x > (box.coordinate.x + 2) || pers.coordinate.x < (box.coordinate.x - 2) || pers.coordinate.y > (box.coordinate.y + 2) || pers.coordinate.y < (box.coordinate.y - 2) {
+            return nil
+        } else {
+        // если коробка не выходит за пределы комнаты, то выполнить действие
+            if move(object: box, direction: inDir) != nil {
+                move(object: pers, direction: inDir)
+                return inDir
+            } else {
+                return nil
+            }
+        }
+    } // конец функции передвижения объекта
+    
+    // функция засовыания box в hole
+    mutating func putInHole(box: inout Object?, by pers: Object, inDir: Direction) {
+        for cell in 0..<room.count {
+            if room[cell].coordinate == box!.coordinate {
+                room[cell].object = nil
+            }
+        }
+        box = nil
+        move(object: pers, direction: inDir)
+    }
+    
+} // конец  класса "Room
+
+
+
+// загрузка игры
+// задаю условия для игрового поля
+var playRoom = Room(width: 10, lenght: 10)
+// создаю игровое поле из заданных условий
+playRoom.create()
+
+// создаю персонажа
+var pers = Object(coordinate: (x: 2, y: 2), icon: "🧔🏻")
+// создаю ящик
+var box1: Object? = Object(coordinate: (x:2, y:7), icon: "🧰")
+var box2: Object? = Object(coordinate: (x:3, y:7), icon: "🧰")
+var box3: Object? = Object(coordinate: (x:4, y:7), icon: "🧰")
+
+// создаю дыру
+var hole = Object(coordinate: (x: 10, y: 10), icon: "🕳")
+
+// старт игры
+// добавляю объекты в игровую комнату
+playRoom.placeToTheRoom(object: pers)
+playRoom.placeToTheRoom(object: box1!)
+playRoom.placeToTheRoom(object: box2!)
+playRoom.placeToTheRoom(object: box3!)
+playRoom.placeToTheRoom(object: hole)
+
+// передвигаю персонажа
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .right)
+playRoom.move(object: pers, direction: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.move(object: pers, direction: .left)
+playRoom.move(object: pers, direction: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .right)
+playRoom.moveThe(box: box1!, by: pers, inDir: .right)
+playRoom.moveThe(box: box1!, by: pers, inDir: .right)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .right)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box1!, by: pers, inDir: .bottom)
+playRoom.putInHole(box: &box1, by: pers, inDir: .bottom)
+playRoom.moveThe(box: box3!, by: pers, inDir: .bottom)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .top)
+playRoom.move(object: pers, direction: .left)
+playRoom.move(object: pers, direction: .left)
+playRoom.move(object: pers, direction: .left)
+playRoom.move(object: pers, direction: .left)
+//playRoom.moveThe(box: box2!, by: pers, inDir: .right)
+//playRoom.move(object: pers, direction: .top)
+//playRoom.moveThe(box: box1, by: pers, inDir: .right)
+//playRoom.move(object: pers, direction: .right)
+//playRoom.moveThe(box: box1, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box1, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box1, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box, by: pers, inDir: .bottom)
+//playRoom.moveThe(box: box, by: pers, inDir: .bottom)
+//playRoom.putInHole(box: box, by: pers, inDir: .bottom)
+box1
+pers
+playRoom.room
+// печатаю комнату
+//playRoom.print()
+
+
+
+ 
