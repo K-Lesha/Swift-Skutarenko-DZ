@@ -1,0 +1,272 @@
+
+                                        // MARK: ENUM
+
+///  №1 сделать энум с шахматными фигурами — король ферзь и т.д., каждое значение должно иметь ассоциированное значение: цвет, белый или черный, помимо значения должна быть буква (a-h) и цифра (1-8)
+///  инициализировать несколько фигур, поместить их на доски
+///  они должны стоять в позиции, чтобы черному королю был мат
+///
+///  ///  №2 положить эти фигуры в массив
+///  каждый тип энума будет иметь rawWalue, тип стринг, король "кинг", королева "квин"
+///1 функция принимает одну фигуру, должна распечатать тип фигуры, цвет и позицию
+///
+//////  2 функция принимает массив фигур, и для каждой фигур вызывает первую функцию
+///  №3 создать функцию, которая будет рисовать эту доску
+///  функция принимает массив, расставляет фигуры, показать в принтлн все позиции фигур
+
+// создаю энум Фигуры со всеми фигурами
+enum Figures { // фигуры
+case King (color: Color, coordinate: (String, Int), icon: String) // король
+case Queen (color: Color, coordinate: (String, Int), icon: String) // королева
+case wBishop (color: Color, coordinate: (String, Int), icon: String) // слон
+case bBishop (color: Color, coordinate: (String, Int), icon: String) // слон
+case Knight (color: Color, coordinate: (String, Int), icon: String) // конь
+case Rook (color: Color, coordinate: (String, Int), icon: String) // ладья
+case Pawn (color: Color, coordinate: (String, Int), icon: String) // пешка
+
+    enum Color: String {
+    case Black = "Black"
+    case White = "White"
+    }
+}
+
+// инициализация фигур
+var whiteKing: Figures = .King(color: .White, coordinate: ("h", 4), icon: "🤴🏻")
+var whiteQueen: Figures = .Queen(color: .White, coordinate: ("h", 5), icon: "👸🏻")
+var whiteWBishop: Figures = .wBishop(color: .White, coordinate: ("h", 3), icon: "🖕🏻")
+var whiteBBishop: Figures = .bBishop(color: .White, coordinate: ("h", 6), icon: "🖕🏻")
+var whiteKnight1: Figures = .Knight(color: .White, coordinate: ("h", 2), icon: "🐈")
+var whiteKnight2: Figures = .Knight(color: .White, coordinate: ("h", 7), icon: "🐈")
+var whiteRook1: Figures = .Rook(color: .White, coordinate: ("h", 1), icon: "🏥")
+var whiteRook2: Figures = .Rook(color: .White, coordinate: ("h", 8), icon: "🏥")
+var whitePawn1: Figures = .Pawn(color: .White, coordinate: ("g", 1), icon: "🕴🏻")
+var whitePawn2: Figures = .Pawn(color: .White, coordinate: ("g", 2), icon: "🕴🏻")
+var whitePawn3: Figures = .Pawn(color: .White, coordinate: ("g", 3), icon: "🕴🏻")
+var whitePawn4: Figures = .Pawn(color: .White, coordinate: ("g", 4), icon: "🕴🏻")
+var whitePawn5: Figures = .Pawn(color: .White, coordinate: ("g", 5), icon: "🕴🏻")
+var whitePawn6: Figures = .Pawn(color: .White, coordinate: ("g", 6), icon: "🕴🏻")
+var whitePawn7: Figures = .Pawn(color: .White, coordinate: ("g", 7), icon: "🕴🏻")
+var whitePawn8: Figures = .Pawn(color: .White, coordinate: ("g", 8), icon: "🕴🏻")
+
+var blackKing: Figures = .King(color: .Black, coordinate: ("a", 4), icon: "🤴🏿")
+var blackQueen: Figures = .Queen(color: .Black, coordinate: ("a", 5), icon: "👸🏿")
+var blackWBishop: Figures = .wBishop(color: .Black, coordinate: ("a", 6), icon: "🖕🏿")
+var blackBBishop: Figures = .bBishop(color: .Black, coordinate: ("a", 3), icon: "🖕🏿")
+var blackKnight1: Figures = .Knight(color: .Black, coordinate: ("a", 2), icon: "🐈‍⬛")
+var blackKnight2: Figures = .Knight(color: .Black, coordinate: ("a", 7), icon: "🐈‍⬛")
+var blackRook1: Figures = .Rook(color: .Black, coordinate: ("a", 1), icon: "🏯")
+var blackRook2: Figures = .Rook(color: .Black, coordinate: ("a", 8), icon: "🏯")
+var blackPawn1: Figures = .Pawn(color: .Black, coordinate: ("b", 1), icon: "🕴🏿")
+var blackPawn2: Figures = .Pawn(color: .Black, coordinate: ("b", 2), icon: "🕴🏿")
+var blackPawn3: Figures = .Pawn(color: .Black, coordinate: ("b", 3), icon: "🕴🏿")
+var blackPawn4: Figures = .Pawn(color: .Black, coordinate: ("b", 4), icon: "🕴🏿")
+var blackPawn5: Figures = .Pawn(color: .Black, coordinate: ("b", 5), icon: "🕴🏿")
+var blackPawn6: Figures = .Pawn(color: .Black, coordinate: ("b", 6), icon: "🕴🏿")
+var blackPawn7: Figures = .Pawn(color: .Black, coordinate: ("b", 7), icon: "🕴🏿")
+var blackPawn8: Figures = .Pawn(color: .Black, coordinate: ("b", 8), icon: "🕴🏿")
+
+// пустая доска
+var Plate: [((String, Int), Figures?)] = [
+                                            (("a", 1), nil), (("a", 2), nil), (("a", 3), nil), (("a", 4), nil), (("a", 5), nil), (("a", 6), nil), (("a", 7), nil), (("a", 8), nil),
+                                            (("b", 1), nil), (( "b", 2), nil), (( "b", 3), nil), (( "b", 4), nil), (( "b", 5), nil), (( "b", 6), nil), (( "b", 7), nil), (( "b", 8), nil),
+                                            (( "c", 1), nil), ((  "c", 2), nil), ((  "c", 3), nil), ((  "c", 4), nil), ((  "c", 5), nil), ((  "c", 6), nil), ((  "c", 7), nil), ((  "c", 8), nil),
+                                            (("d", 1), nil), (( "d", 2), nil), (( "d", 3), nil), (( "d", 4), nil), (( "d", 5), nil), (( "d", 6), nil), (( "d", 7), nil), (( "d", 8), nil),
+                                            (("e", 1), nil), (( "e", 2), nil), (( "e", 3), nil), (( "e", 4), nil), (( "e", 5), nil), (( "e", 6), nil), (( "e", 7), nil), (( "e", 8), nil),
+                                            (("f", 1), nil), (( "f", 2), nil), (( "f", 3), nil), (( "f", 4), nil), (( "f", 5), nil), (( "f", 6), nil), (( "f", 7), nil), (( "f", 8), nil),
+                                            (("g", 1), nil), (( "g", 2), nil), (( "g", 3), nil), (( "g", 4), nil), (( "g", 5), nil), (( "g", 6), nil), (( "g", 7), nil), (( "g", 8), nil),
+                                            (("h", 1), nil), (( "h", 2), nil), (( "h", 3), nil), (( "h", 4), nil), (( "h", 5), nil), (( "h", 6), nil), (( "h", 7), nil), (( "h", 8), nil) ]
+
+// функция, которая принимает значения массива и выдает принт доски
+func printPlate (_ a: [((String, Int), Figures?)]) -> () {
+    
+    // подфункция, которая печатает ячейку: если нил, то её чистое значение, если есть фигура, то фигуру!
+    func cellPrint (_ cell: ((String, Int), Figures?) ) -> String {
+        
+        func bOw (_ coors: (String, Int)) -> String { // подподфункция, которая выдает белое или черное в ответ на заданный параметр
+            let lettersSequence = ["a", "b", "c", "d", "e", "f", "g", "h"]
+            
+            let (letterFunc, integer) = coors
+            func letterToInt (letter: String) -> Int {
+                var intOfLetter = 0
+                for (index, value) in lettersSequence.enumerated() {
+                    if letterFunc == value {
+                        intOfLetter = index + 1
+                    }
+                }
+                return intOfLetter
+            }
+            let intOfLetter = letterToInt(letter: letterFunc)
+            return ((intOfLetter % 2) == (integer % 2)) ? "⬛" : "⬜"
+        }
+        
+        // получить иконку фигуры
+        func getIcon (figure: Figures) -> String {
+            var futureIcon = ""
+            
+            switch figure {
+            case .King (_, _, let icon): futureIcon = icon
+            case .Queen (_, _, let icon): futureIcon = icon
+            case .wBishop (_, _, let icon): futureIcon = icon
+            case .bBishop (_, _, let icon): futureIcon = icon
+            case .Knight (_, _, let icon): futureIcon = icon
+            case .Rook (_, _, let icon): futureIcon = icon
+            case .Pawn (_, _, let icon): futureIcon = icon
+            }
+            
+            return futureIcon
+        }
+        
+        var tempCell: String = ""
+        
+        switch cell {
+        case (_, let b) where b == nil: tempCell = bOw(cell.0)
+        case (_, let b) where b != nil: tempCell = getIcon(figure: cell.1!)
+        default: break
+        }
+        
+        return tempCell
+    }
+    
+print(
+    "   1   2  3  4  5  6  7  8 \n",
+    "a \(cellPrint(a[0])) \(cellPrint(a[1])) \(cellPrint(a[2])) \(cellPrint(a[3])) \(cellPrint(a[4])) \(cellPrint(a[5])) \(cellPrint(a[6])) \(cellPrint(a[7]))\n",
+      "b \(cellPrint(a[8])) \(cellPrint(a[9])) \(cellPrint(a[10])) \(cellPrint(a[11])) \(cellPrint(a[12])) \(cellPrint(a[13])) \(cellPrint(a[14])) \(cellPrint(a[15]))\n",
+      "c \(cellPrint(a[16])) \(cellPrint(a[17])) \(cellPrint(a[18])) \(cellPrint(a[19])) \(cellPrint(a[20])) \(cellPrint(a[21])) \(cellPrint(a[22])) \(cellPrint(a[23]))\n",
+      "d \(cellPrint(a[24])) \(cellPrint(a[25])) \(cellPrint(a[26])) \(cellPrint(a[27])) \(cellPrint(a[28])) \(cellPrint(a[29])) \(cellPrint(a[30])) \(cellPrint(a[31]))\n",
+      "e \(cellPrint(a[32])) \(cellPrint(a[33])) \(cellPrint(a[34])) \(cellPrint(a[35])) \(cellPrint(a[36])) \(cellPrint(a[37])) \(cellPrint(a[38])) \(cellPrint(a[39]))\n",
+      "f \(cellPrint(a[40])) \(cellPrint(a[41])) \(cellPrint(a[42])) \(cellPrint(a[43])) \(cellPrint(a[44])) \(cellPrint(a[45])) \(cellPrint(a[46])) \(cellPrint(a[47]))\n",
+      "g \(cellPrint(a[48])) \(cellPrint(a[49])) \(cellPrint(a[50])) \(cellPrint(a[51])) \(cellPrint(a[52])) \(cellPrint(a[53])) \(cellPrint(a[54])) \(cellPrint(a[55]))\n",
+      "h \(cellPrint(a[56])) \(cellPrint(a[57])) \(cellPrint(a[58])) \(cellPrint(a[59])) \(cellPrint(a[60])) \(cellPrint(a[61])) \(cellPrint(a[62])) \(cellPrint(a[63]))")
+}
+
+// функция добавляет фигуру в массив доски
+func placeFigure (_ figure: Figures) -> () {
+    
+    // получить координату фигуры
+    func getCoordinate (figure: Figures) -> (String, Int) {
+        var futureCoor = ("", 0)
+        
+        switch figure {
+        case .King (_, let coor, _): futureCoor = coor
+        case .Queen (_, let coor, _): futureCoor = coor
+        case .wBishop (_, let coor, _): futureCoor = coor
+        case .bBishop (_, let coor, _): futureCoor = coor
+        case .Knight (_, let coor, _): futureCoor = coor
+        case .Rook (_, let coor, _): futureCoor = coor
+        case .Pawn (_, let coor, _): futureCoor = coor
+        }
+        
+        return futureCoor
+    }
+    getCoordinate(figure: blackRook2)
+
+    for (index, value) in Plate.enumerated() {
+        switch value {
+        case (let a, _) where a == getCoordinate(figure: figure): Plate[index] = (a, figure)
+        default: break
+        }
+    }
+}
+
+// расставляем фигуры на доску
+var placedFigures: [()] = [
+placeFigure(whiteKing),
+placeFigure(whiteQueen),
+placeFigure(whiteWBishop),
+placeFigure(whiteBBishop),
+placeFigure(whiteKnight1),
+placeFigure(whiteKnight2),
+placeFigure(whiteRook1),
+placeFigure(whiteRook2),
+placeFigure(whitePawn1),
+placeFigure(whitePawn2),
+placeFigure(whitePawn3),
+placeFigure(whitePawn4),
+placeFigure(whitePawn5),
+placeFigure(whitePawn6),
+placeFigure(whitePawn7),
+placeFigure(whitePawn8),
+placeFigure(blackKing),
+placeFigure(blackQueen),
+placeFigure(blackWBishop),
+placeFigure(blackBBishop),
+placeFigure(blackKnight1),
+placeFigure(blackKnight2),
+placeFigure(blackRook1),
+placeFigure(blackRook2),
+placeFigure(blackPawn1),
+placeFigure(blackPawn2),
+placeFigure(blackPawn3),
+placeFigure(blackPawn4),
+placeFigure(blackPawn5),
+placeFigure(blackPawn6),
+placeFigure(blackPawn7),
+placeFigure(blackPawn8)
+]
+
+
+///  №4 функция принимает шахматную фигуру и тюпл (буква и цифра) - новая позиция на шахматной доске, функция будет двигать фигуру на другую позицию.
+///  функция не должна двигать фигуру, если ввел параметры за пределами доски , не должна давать двигать фигуру
+///  задание ++ фигуры должны двигаться только по своим реальным координатам
+///  передвинуть несколько фигур, распечатать новую доску
+
+// функция переместить фигуру
+func replaceFigure (_ figure: inout Figures, _ newCoors: (String, Int)) -> () {
+    
+    // проверка, не ходит ли фигура за пределы поля
+    let (a, b) = newCoors
+    
+    switch a {
+    case "a", "b", "c", "d", "e", "f", "g", "h": break
+    default:
+        print ("Not possible to move figure like this. Stop game\n",
+               "‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️")
+    }
+    
+    switch b {
+    case 1...8: break
+    default:
+        print ("Not possible to move figure like this. Stop game\n",
+        "‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️")
+    }
+    
+        // перемещаем фигуру на новую ячейку
+    var temporaryFigure = figure
+    
+    var coorToClean: (String, Int) = ("i", 12)
+    
+    switch temporaryFigure {
+    case .King(let a, let c, let b):
+        temporaryFigure = .King(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .Queen (let a, let c, let b):
+        temporaryFigure = .Queen(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .wBishop (let a, let c, let b):
+        temporaryFigure = .wBishop(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .bBishop (let a, let c, let b):
+        temporaryFigure = .bBishop(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .Knight (let a, let c, let b):
+        temporaryFigure = .Knight(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .Rook (let a, let c, let b):
+        temporaryFigure = .Rook(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    case .Pawn (let a, let c, let b):
+        temporaryFigure = .Pawn(color: a, coordinate: newCoors, icon: b); coorToClean = c
+    }
+    
+    // очистить предыдущую ячейку фигуры
+    for (index, value) in Plate.enumerated() {
+        switch value {
+        case (let a, _) where a == coorToClean: Plate[index] = ((coorToClean), nil)
+        default: break
+        }
+    }
+    
+    // return фигуры и постановка фигуры на поле
+    figure = temporaryFigure
+    placeFigure(figure)
+}
+
+replaceFigure(&whitePawn1, ("f", 1))
+
+
+// печатаем доску
+
+printPlate(Plate)
