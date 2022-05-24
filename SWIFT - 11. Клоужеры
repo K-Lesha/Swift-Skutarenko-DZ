@@ -1,0 +1,185 @@
+ // MARK: КЛОУЖЕРЫ
+///1. написать функцию, которая принимает клоужер, который ничего не принимает и ничего не возвращает
+/// в тело функции цикл фор от 1 до 10
+/// и в теле цикла принт лн выводить цифру от 1 до 10
+/// после выхода из цикла вызвать клоужер
+/// а в клоужере положить принт лн
+/// цикл стартанул, цикл отработал, а потом вызов клоужера
+/// в клоужере "цикл закончен"
+
+
+
+func testClosure (closure: ()->()) {
+    for n in 1...5 {
+        print (n)
+    }
+    closure()
+}
+
+testClosure() {
+    print ("я иду тебя искать")
+}
+
+/// 2. прочитать методичку
+/// создать массив интенджеров, использовать .sorted, отсортировать  по возрастанию и по убыванию
+/// использовать функцию от эпла
+
+let intsArray = [1, 3, 4, 4, 1, 4, 6, 8, 1, 12, 33, 123, 44]
+
+var InverterAdday = intsArray.sorted(by: { (int1: Int, int2: Int) -> Bool in
+    return int1 > int2
+} )
+
+InverterAdday =
+intsArray.sorted { $0 < $1 }
+InverterAdday
+
+///задание №3. написать функцию, которая принимает массив интеджеров и {клоужер (принимает два инта, один из них опшионал), возвращает Bool)
+///функция возвращает инт число
+///
+///в самой функции создать опшионал переменную = nil
+///и создать цикл, в цикле пройтись по массиву интеджеров
+///сравнивать свою опшионал с каждым элементом этого массива, но передавать её в клоужер, он будет сравнивать "да или нет"
+///если да, то значение массива записать в переменную
+///если нет, то ничего не делать
+///
+///вернуть само значение опшионал переменной
+///использовать для получения максимального значения массива, в другом случае сделать минимальное значение массива
+
+func minOrMax (array: [Int], _ method: (Int?, Int) -> Bool) -> Int {
+    var optionalInt: Int? = nil
+    
+    for value in array {
+        if method(optionalInt, value) {
+            optionalInt = value
+        }
+    }
+    
+    return optionalInt ?? 0 // ретёрн опшиналИнт = нил, если есть значение. если там нил, то вернуть 0
+}
+
+var mixValue =
+minOrMax(array: intsArray) {(y: Int?, x: Int) -> Bool in
+    return y == nil || y! > x
+}
+
+var maxValue =
+minOrMax(array: intsArray) {(y: Int?, x: Int) -> Bool in
+    return y == nil || y! < x
+}
+
+// другая запись
+var minValue2 =
+minOrMax(array: intsArray) { y, x  in y == nil || y! > x }
+// третья запись
+var manValue2 =
+minOrMax(array: intsArray) { $0 == nil || $1 > $0! }
+
+
+/// создать произвольную строку, преобразить эту строку в массив character-ов
+/// использовать метод sorted, отсортировать массив чтобы вначале шли гласные в алфавитном порядке, потом согласные, потом цифры, а потом символы
+
+let randomString = "аыв лгл9зьзь 087пм *?ЕПЛ ы21ф25, 2н1!!ёфц4ац??34ф уа"
+var stringArray: [Character]  = []
+for ch in randomString { stringArray.append(ch) }
+
+// "аеиоуэюяУЕЭОАЫЯИЮйцкнгшщзхждлрпвфчсмтбЙЦКНГШЩЗХЖДЛРПВФЧСМТБ0123456789.«»-, ?!@#$%^&*()_+"
+
+
+let sortedArray =
+stringArray.sorted(by: { (ch1: Character, ch2: Character) -> Bool in
+    
+    func priority (_ string: Character) -> Int {
+        
+        switch string {
+        case "а", "е", "и", "о", "у", "э", "ю", "я", "ы", "ё", "Е": return 1
+        case "й", "ц","к","н","г","ш","щ","з","х","ж","д","л","р","п","в","ф","ч","с","м","т","б", "П", "Л", "ь": return 2
+        case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9": return 3
+        case ".", "«", "»", "-", ",", " ", "?", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+": return 4
+        default: return 4
+        }
+        
+    }
+
+    if priority(ch1) >= priority(ch2) { return false } else { return true }
+})
+stringArray
+sortedArray
+
+///проделать задание № 3 (минимальное и максимальное число) сделать тоже самое, но для массива букв, найти максимальный и минимальный кэректер в строке ( с максимальным скалярным значением в строке)
+
+
+//
+//func getScalar (_ ch: Character) -> Int {
+//    var temInt = 0
+//    temInt = Int ( UnicodeScalar(ch) )
+//    return temInt
+//}
+//getScalar("a")
+
+let stringForScalars = "абвгджзклмлнфыватщгтяяячсуц"
+
+func stScalar (_ characterArray: String, _ method: (Character?, Character) -> Bool) -> Character {
+    //пишем функцию по операциям по сравниванию чарактера с открытым методом
+    var tempCharacter: Character? = nil
+    
+    if tempCharacter == nil {
+        tempCharacter = characterArray.first
+    } else {
+        return " "
+    }
+    
+    for character in characterArray {
+        if method(tempCharacter, character) {
+            tempCharacter = character
+            
+        }
+    }
+    
+    return tempCharacter!
+}
+    //--------
+let dogString = "z"
+var scalarInt = 0
+for scalar in dogString.unicodeScalars {
+    scalarInt = Int(scalar.value)
+    print (scalarInt)
+}
+
+func getScalar (_ ch: Character) -> Int {  //переводим чарактэр в скалярный инт
+    let z: String = String(ch)
+    var scalarInt = 0
+    
+    for scalar in z.unicodeScalars {
+        scalarInt = Int(scalar.value)
+        }
+    
+    return scalarInt
+}
+
+//func getScalar (_ ch: Character) -> Int { //переводим чарактэр в скалярный инт другим способом
+//    let z = String(ch).unicodeScalars
+//    return Int(z[z.startIndex].value)
+//}
+
+
+let minScalar = stScalar(stringForScalars) {(ch1: Character?, ch2: Character) -> Bool in //ищем самый маленький скалар чарактера
+
+    switch (ch1, ch2) {
+    case let (a, b) where getScalar(a!) > getScalar(b): return true
+    default: return false
+    }
+    
+}
+
+let maxScalar = stScalar(stringForScalars) {(ch1: Character?, ch2: Character) -> Bool in //ищем самый большой скалар чарактера
+
+    if getScalar(ch1!) < getScalar(ch2) {
+        return true
+        
+    } else {
+        return false
+    }
+    
+}
+
