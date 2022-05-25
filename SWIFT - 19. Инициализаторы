@@ -36,7 +36,7 @@ class Painter : Artist {
         
         super.init (name: name, surname: surname, performanceType: "paint")
         
-        self.name = name.uppercased() + " 👩‍🎨"
+        self.name = name.uppercased()
         self.surname = ""
     }
 }
