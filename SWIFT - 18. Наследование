@@ -1,0 +1,300 @@
+   // MARK: наследование
+
+/// 1. У нас есть базовый класс "Артист" и у него есть имя и фамилия. И есть метод "Выступление". У каждого артиста должно быть свое выступление: танцор танцует, певец поет и тд. А для художника, что бы вы не пытались ставить, пусть он ставит что-то свое (пусть меняет имя на свое артистическое). Когда вызываем метод "выступление" показать в консоле имя и фамилию артиста и собственно само выступление.
+// Полиморфизм используем для артистов. Положить их всех в массив, пройтись по нему и вызвать их метод "выступление"
+
+class Artist {
+    var name : String = ""
+    var surname : String = ""
+    var performanceType : String {
+        return "perform"
+    }
+    
+    func performance () -> () {
+        print("\(name) \(surname) will \(performanceType) for us")
+    }
+
+}
+
+class Painter : Artist {
+    override var name : String {
+        didSet {
+            super.name = super.name.uppercased() + " 👩‍🎨"
+        }
+    }
+    
+    override var surname: String {
+        didSet {
+            super.surname = ""
+        }
+    }
+    
+    override var performanceType : String {
+        return "paint"
+    }
+
+}
+
+class Musician : Artist {
+    override var performanceType : String {
+        return "sing"
+    }
+}
+
+class Dancer : Artist {
+    override var performanceType : String {
+        return "dance"
+    }
+}
+
+let artist = Artist()
+artist.name = "Dmitry"
+artist.surname = "Lazarev"
+
+let painter = Painter()
+painter.name = "Grigory"
+painter.surname = "Slivkon"
+
+let musician = Musician()
+musician.name = "Philipp"
+musician.surname = "Gorbachev"
+
+let dancer = Dancer()
+dancer.name = "Le"
+dancer.surname = "Twin"
+
+let artists : [Artist] = [artist, painter, musician, dancer]
+
+for artist in artists {
+    artist.performance()
+}
+
+/// Создать базовый класс "транспортное средство" и добавить три разных проперти: скорость, вместимость и стоимость одной перевозки (computed).
+///  Создайте несколько дочерних классов и переопределите их компютед проперти у всех. Создайте класс самолет, корабль, вертолет, машина и у каждого по одному объекту. В компютед пропертис каждого класса напишите свои значения скорости, вместимости, стоимости перевозки. +
+///  у вас должен быть свой метод который считает сколько уйдет денег и времени чтобы перевести из пункта А в пункт В определенное количество людей с использованием наших транспортных средств. Вывести в консоль результат (как быстро сможем перевести, стоимость, количество перевозок).
+/// Используем полиморфизм
+
+
+class Vehicle {
+    var speed = 0
+    var capacity = 0
+    var costForOneTransopting : Int {
+        return 0
+    }
+    
+    // функция считает кол-во часов на то, чтобы добраться како-муто кол-ву людей из точки А в точку Б
+    func howManyTimeAndCostFromA(_ a: Double, toB b: Double, amountOfPeople: Double) -> (time: Double, cost: Double) {
+        // считаем кол-во раз, которое нужно будет ехать
+        let timesToRide = ceil(amountOfPeople / Double(self.capacity))
+        // считаем дистацию между а и б
+        let distance = b - a
+        // считаем время одной поездки
+        let timeForOneTrip = distance / Double(self.speed)
+        // считаем время всех поездок
+        let timeForWholeTrip = timeForOneTrip * timesToRide
+        // возвращаем время всех поездок округенное в большую сторону
+        return (time: ceil(timeForWholeTrip), cost: (timesToRide * Double(costForOneTransopting)))
+    }
+    
+    
+}
+
+class Plane : Vehicle {
+    var name = "plane"
+    override var costForOneTransopting : Int {
+        return 300 * capacity
+    }
+}
+
+var plane = Plane()
+plane.speed = 300
+plane.capacity = 50
+plane.costForOneTransopting
+plane.howManyTimeAndCostFromA(0, toB: 24, amountOfPeople: 24)
+
+
+class Helicopter : Vehicle {
+    var name = "helicopter"
+    override var costForOneTransopting : Int {
+        return 700 * capacity
+    }
+}
+
+var helicopter = Helicopter()
+helicopter.speed = 150
+helicopter.capacity = 6
+
+
+class Car : Vehicle {
+    var name = "car"
+    override var costForOneTransopting : Int {
+        return 300
+    }
+}
+
+var car = Car()
+car.speed = 100
+car.capacity = 4
+
+
+// добавляем все транспортные средства в массив
+var vehicles = [plane, helicopter, car]
+
+// подсчет и сравнение времени и стоимости перевозки большого кол-ва людей
+var a: Double = 0
+var b: Double = 500
+var amountOfPeople: Double = 1000
+
+// переменные в которую добавим быстрее и дешевле всего
+var fastest : Vehicle? = nil
+var cheapest : Vehicle? = nil
+
+// считаем
+for vehicle in vehicles {
+    if fastest == nil {
+        fastest = vehicle
+    }
+    if vehicle.howManyTimeAndCostFromA(a, toB: b, amountOfPeople: amountOfPeople).time < fastest!.howManyTimeAndCostFromA(a, toB: b, amountOfPeople: amountOfPeople).time {
+        fastest = vehicle
+    }
+}
+fastest // самолётом быстрее всего
+
+for vehicle in vehicles {
+    if cheapest == nil {
+        cheapest = vehicle
+    }
+    if vehicle.howManyTimeAndCostFromA(a, toB: b, amountOfPeople: amountOfPeople).cost < cheapest!.howManyTimeAndCostFromA(a, toB: b, amountOfPeople: amountOfPeople).cost {
+        cheapest = vehicle
+    }
+}
+cheapest // машиной дешевле всего
+
+
+
+
+
+
+
+
+/// Есть 5 классов: люди, крокодилы, обезьяны, собаки, жирафы. (в этом задании вы будете создавать не дочерние классы, а родительские и ваша задача создать родительский таким образом, чтобы сгруппировать эти 5).
+/// - Создайте по пару объектов каждого класса.
+/// - Посчитайте пресмыкающихся (создайте массив, поместите туда пресмыкающихся и скажите сколько в нем объектов)
+/// - Сколько четвероногих?
+/// - Сколько здесь животных?
+/// - Сколько живых существ?
+
+class Alives {
+    var name = ""
+    
+    var isReptile : Bool {
+        return false
+    }
+    var legs : Int {
+        return 2
+    }
+    var isAnimal : Bool {
+        return false
+    }
+}
+
+class Humans : Alives {
+    
+}
+
+class Aligators : Alives {
+    override var isReptile : Bool {
+        return true
+    }
+
+    override var legs : Int {
+        return 4
+    }
+    
+    override var isAnimal: Bool {
+        return true
+    }
+}
+
+class Monkeys : Alives {
+    override var isAnimal: Bool {
+        return true
+    }
+
+}
+
+
+class Dogs : Alives {
+    
+    override var legs : Int {
+        return 4
+    }
+    override var isAnimal: Bool {
+        return true
+    }
+
+}
+
+class Giraffes : Alives {
+    override var legs : Int {
+        return 4
+    }
+
+    override var isAnimal: Bool {
+        return true
+    }
+}
+
+let human1 = Humans()
+human1.name = "Georgiy"
+let human2 = Humans()
+human2.name = "Nastya"
+
+let aligator1 = Aligators()
+let aligator2 = Aligators()
+
+let monkey1 = Monkeys()
+let monkey2 = Monkeys()
+
+let dog1 = Dogs()
+dog1.name = "pushok"
+
+let dog2 = Dogs()
+dog2.name = "dvornyaga"
+
+let giraffe1 = Giraffes()
+let giraffe2 = Giraffes()
+
+let alivesArray = [human1, human2, aligator1, aligator2, monkey1, monkey2, dog1, dog2, giraffe1, giraffe2]
+
+// - Сколько живых существ?
+print("Живых существ тут \(alivesArray.count)")
+
+/// – Посчитайте пресмыкающихся (создайте массив, поместите туда пресмыкающихся и скажите сколько в нем объектов)
+var reptiles = 0
+for alive in alivesArray {
+    if alive.isReptile {
+        reptiles += 1
+    }
+}
+print("Рептилий тут \(reptiles)")
+
+/// - Сколько четвероногих?
+var fourLegsAlives = 0
+for alive in alivesArray {
+    if alive.legs == 4 {
+        fourLegsAlives += 1
+    }
+}
+
+print("Четвероногих тут \(fourLegsAlives)")
+
+/// - Сколько здесь животных?
+var animals = 0
+for alive in alivesArray {
+    if alive.isAnimal {
+        animals += 1
+    }
+}
+
+print("Животных тут \(animals), а если с человеком, то \(alivesArray.count)")
