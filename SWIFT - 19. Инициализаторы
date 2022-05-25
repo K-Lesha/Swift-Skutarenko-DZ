@@ -1,0 +1,71 @@
+  // MARK: инициализация
+
+    // в прошлой ДЗ мне не хватило знайний по инициализаторам чтобы красивее написать код, поэтому переписываю прошлое дз с Артистами
+
+class Artist {
+    var name : String
+    var surname : String
+    var performanceType : String
+    
+    func performance () -> () {
+        print("\(name) \(surname) will \(performanceType) for us")
+    }
+    
+    init (name: String, surname: String, performanceType: String) {
+        self.name = name
+        self.surname = surname
+        self.performanceType = performanceType
+    }
+
+}
+
+class Painter : Artist {
+    override var name : String {
+        didSet {
+            super.name = super.name.uppercased() + " 👩‍🎨"
+        }
+    }
+    
+    override var surname: String {
+        didSet {
+            super.surname = ""
+        }
+    }
+    
+    override init (name: String, surname: String, performanceType: String) {
+        
+        super.init (name: name, surname: surname, performanceType: performanceType)
+        
+        self.name = name.uppercased() + " 👩‍🎨"
+        self.surname = ""
+    }
+}
+
+
+class Musician : Artist {
+    
+    override init (name: String, surname: String, performanceType: String) {
+        super.init (name: name, surname: surname, performanceType: performanceType)
+    }
+}
+
+class Dancer : Artist {
+    override init (name: String, surname: String, performanceType: String) {
+        super.init (name: name, surname: surname, performanceType: performanceType)
+    }
+
+}
+
+let artist = Artist(name: "Vasilii", surname: "Pupkin", performanceType: "performance")
+
+let painter = Painter(name: "Grigory", surname: "Slivkin", performanceType: "paint")
+
+let musician = Musician(name: "Mathias", surname: "Aguayo", performanceType: "play music")
+
+let dancer = Dancer(name: "Le", surname: "Dance", performanceType: "breakdanse")
+
+let artists : [Artist] = [artist, painter, musician, dancer]
+
+for artist in artists {
+    artist.performance()
+}
