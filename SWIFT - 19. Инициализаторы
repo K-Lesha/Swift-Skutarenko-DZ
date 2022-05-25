@@ -1,4 +1,4 @@
-  // MARK: инициализация
+                                   // MARK: инициализация
 
     // в прошлой ДЗ мне не хватило знайний по инициализаторам чтобы красивее написать код, поэтому переписываю прошлое дз с Артистами
 
@@ -32,9 +32,9 @@ class Painter : Artist {
         }
     }
     
-    override init (name: String, surname: String, performanceType: String) {
+        init (name: String, surname: String) {
         
-        super.init (name: name, surname: surname, performanceType: performanceType)
+        super.init (name: name, surname: surname, performanceType: "paint")
         
         self.name = name.uppercased() + " 👩‍🎨"
         self.surname = ""
@@ -44,25 +44,26 @@ class Painter : Artist {
 
 class Musician : Artist {
     
-    override init (name: String, surname: String, performanceType: String) {
-        super.init (name: name, surname: surname, performanceType: performanceType)
+        init (name: String, surname: String) {
+        super.init (name: name, surname: surname, performanceType: "play music")
+        
     }
 }
 
 class Dancer : Artist {
-    override init (name: String, surname: String, performanceType: String) {
-        super.init (name: name, surname: surname, performanceType: performanceType)
+        init (name: String, surname: String) {
+        super.init (name: name, surname: surname, performanceType: "dance")
     }
 
 }
 
 let artist = Artist(name: "Vasilii", surname: "Pupkin", performanceType: "performance")
 
-let painter = Painter(name: "Grigory", surname: "Slivkin", performanceType: "paint")
+let painter = Painter(name: "Grigory", surname: "Slivkin")
 
-let musician = Musician(name: "Mathias", surname: "Aguayo", performanceType: "play music")
+let musician = Musician(name: "Mathias", surname: "Aguayo")
 
-let dancer = Dancer(name: "Le", surname: "Dance", performanceType: "breakdanse")
+let dancer = Dancer(name: "Le", surname: "Dance")
 
 let artists : [Artist] = [artist, painter, musician, dancer]
 
