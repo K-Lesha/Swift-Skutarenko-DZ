@@ -1,0 +1,169 @@
+
+// MARK: ARC домашнее задание
+
+// Рассмотрим такую ситуацию: есть семья - папа, мама и дети.
+// Папа глава семьи, у него есть Мама, Мама контролирует детей, т.е. иерархия: Папа - Мама - Дети, Дети на одном уровне.
+// Дети могут вызывать друг друга и они могут искать пути, как общаться с другими Детьми, например говорить "дай игрушку", спрашивать Маму: "Мама, дай конфетку", общаться с Папой: "Папа, купи игрушку".
+// Вся эта иерархия лежит в объекте класса Семья, у которого есть методы, например распечатать всю Семью, т.е. метод вернёт массив всех членов Семьи.
+// У Папы есть 3 кложера (closures) - 1. когда он обращается к Семье - распечатать всю Семью, 2. распечатать Маму, 3. распечатать всех Детей.
+// Создать всю иерархию со связями. При выходе из зоны видимости все объекты должны быть уничтожены. Используем Command-Line Tool.
+
+
+
+class Father {
+    var name = "father"
+    var bride : Mother
+    var child1 : Child
+    var child2 : Child
+    
+    init (bride: Mother, child1: Child, child2: Child) {
+        self.bride = bride
+        self.child1 = child1
+        self.child2 = child2
+        print("\(name) was inited")
+    }
+    
+    lazy var myfamily : () -> () = {
+        [unowned self] in
+        print("My family are: \(self.bride.name), \(self.child1.name) and \(self.child2.name)")
+    }
+    
+    lazy var askBride : () -> () = {
+        [unowned self] in
+        print("\(self.bride.name), do you want a new toy?")
+    }
+
+    lazy var tellToChildren : () -> () = {
+        [unowned self] in
+        print("\(self.child1.name), \(self.child2.name), do you want an icecream?")
+    }
+
+
+    
+    deinit {
+        print ("\(name) deinted")
+    }
+}
+
+class Mother {
+    var name = "mother"
+    weak var husband : Father?
+    var child1 : Child
+    var child2 : Child
+    
+    lazy var tellToChildren : () -> () = {
+        [unowned self] in
+        print("\(self.child1.name), \(self.child2.name), wash dishplates after yourself!")
+    }
+
+    lazy var tellToHusband : () -> () = {
+        [unowned self] in
+        if husband != nil {
+            print("\(self.husband!.name), do you want to see me naked?")
+        }
+    }
+
+    
+    
+    init (child1: Child, child2: Child) {
+        self.child1 = child1
+        self.child2 = child2
+        print("\(name) was inited")
+    }
+    
+    deinit {
+        print ("\(name) deinted")
+    }
+
+}
+
+class Child {
+    var name = "child"
+    weak var mother : Mother!
+    weak var father : Father!
+    weak var brother: Child!
+    
+   lazy var sayHiToBrother : () -> () = {
+        [unowned self] in
+       if brother != nil {
+           print ("hi \(self.brother.name), would you like to play?")
+       }
+    }
+    
+    lazy var askMother : () -> () = {
+        [unowned self] in
+        print ("hi \(self.mother.name), give me a candy please")
+    }
+
+    lazy var askFather : () -> () = {
+        [unowned self] in
+        print ("hi \(self.father.name), buy me a puppet please")
+    }
+    
+    deinit {
+        print ("\(name) deinted")
+    }
+    
+    init () {
+        print("\(name) was inited")
+    }
+
+}
+
+class Family {
+    var father : Father
+    unowned var mother : Mother
+    unowned var child1 : Child
+    unowned var child2 : Child
+
+    
+    func printNames () -> () {
+        print("Family members are: \(self.father.name), \(self.mother.name), \(self.child1.name) and \(self.child2.name)")
+    }
+    
+    init (father: Father, mother: Mother, child1: Child, child2: Child) {
+        self.father = father
+        self.mother = mother
+        self.child1 = child1
+        self.child2 = child2
+        print("family was inited")
+    }
+    
+    deinit {
+        print ("family deinted")
+    }
+
+}
+
+var playground2 = true
+
+if playground2 {
+
+    let child1 = Child()
+    let child2 = Child()
+
+    let mother = Mother(child1: child1, child2: child2)
+    child1.mother = mother
+    child2.mother = mother
+
+    let father = Father(bride: mother, child1: child1, child2: child2)
+    child1.father = father
+    child2.father = father
+    mother.husband = father
+
+    let family = Family(father: father, mother: mother, child1: child1, child2: child2)
+
+    
+    father.askBride()
+    father.myfamily()
+    father.tellToChildren()
+    
+    mother.tellToHusband()
+    mother.tellToChildren()
+    
+    child1.askFather()
+    child2.askMother()
+    child2.sayHiToBrother()
+    
+    family.printNames()
+}
