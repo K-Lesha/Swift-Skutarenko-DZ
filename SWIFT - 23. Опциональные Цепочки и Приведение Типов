@@ -1,0 +1,448 @@
+                      // MARK: Опциональные Цепочки и Приведение Типов
+
+// Сегодня будем строить свою небольшую социальную сеть.
+// 1. Сделать класс Человек, у этого класса будут проперти Папа, Мама, Братья, Сестры (всё опционально).
+// Сделать примерно 30 человек, взять одного из них, поставить ему Папу/Маму. Папе и Маме поставить Пап/Мам/Братьев/Сестер. Получится большое дерево иерархии. Посчитать, сколько у этого человека двоюродных Братьев, троюродных Сестёр, Теть, Дядь, итд
+// 2. Все сестры, матери,... должны быть класса Женщина, Папы, братья,... класса Мужчины.
+
+
+// 3. Расширить класс человек, у него будет проперти Домашние_животные. Животные могут быть разные (попугаи, кошки, собаки...) их может быть несколько, может и не быть вообще.
+
+
+// класс с животными
+enum Animals : String {
+    case dog = "auf"
+    case cat = "meow"
+    case parrot = "karrrramba"
+    case slave = "i want to kiss your legs"
+}
+
+// супер класс человек
+class Human {
+    
+    var name : String
+    
+    var father : Man?
+    
+    var mother: Woman?
+    
+    var wife : Woman?
+    
+    var husband : Man?
+    
+    var brothers : [Man]?
+    
+    var sisters : [Woman]?
+    
+    var sons : [Man]?
+    
+    var daughters : [Woman]?
+    
+    var animal : Animals?
+    
+    init (name: String) {
+        self.name = name
+    }
+    
+    init (name: String, animal: Animals) {
+        self.name = name
+        self.animal = animal
+    }
+
+}
+
+// класс Мужчины, в обсерверах к свойствам проверка на принадлежность к другому человеку.
+
+class Man : Human {
+    
+    // если у мужчины появляется отец, то у его отца автоматически появляется self сын
+    override var father : Man? {
+        didSet {
+            if father?.sons?[0] == nil {
+                father?.sons = [self]
+            } else {
+                var marker = false
+                for son in father!.sons! {
+                    if son.name == self.name {
+                        marker = true
+                    }
+                    if marker == false {
+                        father?.sons?.append(self)
+                    }
+                }
+            }
+        }
+    }
+
+    // если у мужчины появляется мать, то у его матери автоматически появляется self дочь
+    override var mother : Woman? {
+        didSet {
+            if mother?.sons?[0] == nil {
+                mother?.sons = [self]
+            } else {
+                var marker = false
+                for son in mother!.sons! {
+                    if son.name == self.name {
+                        marker = true
+                    }
+                    if marker == false {
+                        mother?.sons?.append(self)
+                    }
+                }
+            }
+        }
+    }
+    
+    // если у мужчины появляется жена, то у его жены автоматически появляется self муж
+    override var wife : Woman? {
+        didSet {
+            if wife?.husband == nil {
+                wife?.husband = self
+            }
+        }
+    }
+    
+    // если у мужчины появляется брат, то у его брата автоматически появляется self брат
+    override var brothers: [Man]? {
+        didSet {
+            if brothers?[0].brothers?[0] == nil {
+                brothers?[0].brothers = [self]
+            } else {
+                var marker = false
+                for brother in brothers! {
+                    for sisSis in brother.brothers! {
+                        if sisSis.name == self.name {
+                            marker = true
+                        }
+                    }
+                    if marker == false {
+                        brother.brothers?.append(self)
+                    }
+                }
+                
+            }
+        }
+    }
+    // если у мужчины появляется сестра, то у его сестры автоматически появляется self сестра
+    override var sisters: [Woman]? {
+        didSet {
+            if sisters?[0].brothers?[0] == nil {
+                sisters?[0].brothers = [self]
+            } else {
+                var marker = false
+                for sister in sisters! {
+                    for sisSis in sister.brothers! {
+                        if sisSis.name == self.name {
+                            marker = true
+                        }
+                    }
+                    if marker == false {
+                        sister.brothers?.append(self)
+                    }
+                }
+                
+            }
+        }
+    }
+
+    // можно было бы дописать ещё обсервер для того, чтобы если мужчине устанавливается ребенок, то ребенку автоматически присуждается self отец. Но отец не всегда в курсе того, кто настоящий отец его ребенка. Поэтому оставим этот метод в покое.
+    
+
+    func moveCouch () -> () {
+        print ("I am \(name), husband of \(wife!.name). I have to move couch")
+    }
+    
+} // конец класса Мужчина
+
+// класс Женщина
+class Woman : Human {
+    
+    // обсерверы для женщины аналогичные обсерверам мужчины
+    override var father : Man? {
+        didSet {
+            if father?.daughters?[0] == nil {
+                father?.daughters = [self]
+            } else {
+                var marker = false
+                for daughter in father!.daughters! {
+                    if daughter.name == self.name {
+                        marker = true
+                    }
+                    if marker == false {
+                        father?.daughters?.append(self)
+                    }
+                }
+            }
+        }
+    }
+
+    
+    override var mother : Woman? {
+        didSet {
+            if mother?.daughters?[0] == nil {
+                mother?.daughters = [self]
+            } else {
+                var marker = false
+                for daughter in mother!.daughters! {
+                    if daughter.name == self.name {
+                        marker = true
+                    }
+                    if marker == false {
+                        mother?.daughters?.append(self)
+                    }
+                }
+            }
+        }
+    }
+
+    
+    override var husband : Man? {
+        didSet {
+            if husband?.wife == nil {
+                husband?.wife = self
+            }
+        }
+    }
+    
+    override var brothers: [Man]? {
+        didSet {
+            if brothers?[0].sisters?[0] == nil {
+                brothers?[0].sisters = [self]
+            } else {
+                var marker = false
+                for brother in brothers! {
+                    for sisSis in brother.sisters! {
+                        if sisSis.name == self.name {
+                            marker = true
+                        }
+                    }
+                    if marker == false {
+                        brother.sisters?.append(self)
+                    }
+                }
+                
+            }
+        }
+    }
+    
+    override var sisters: [Woman]? {
+        didSet {
+            if sisters?[0].sisters?[0] == nil {
+                sisters?[0].sisters = [self]
+            } else {
+                var marker = false
+                for sister in sisters! {
+                    for sisSis in sister.sisters! {
+                        if sisSis.name == self.name {
+                            marker = true
+                        }
+                    }
+                    if marker == false {
+                        sister.sisters?.append(self)
+                    }
+                }
+                
+            }
+        }
+    }
+
+    func tellToHusband () {
+        if husband != nil {
+            print("I am \(name), i ask \(husband!.name) to move a coach.")
+            husband?.moveCouch()
+        } else {
+            print("I am \(name), i don't have a husband!")
+        }
+        
+    }
+
+    
+} // конец класса Женщина
+
+// создаю себя
+var me = Man(name: "Lesha", animal: .cat)
+
+// создаю родителей и жену
+var Ludmila = Woman(name: "Ludmila") // mama
+me.mother = Ludmila
+me.mother
+Ludmila.sons
+
+
+var Igor = Man(name: "Igor", animal: .dog) // papa
+me.father = Igor
+me.father
+Igor.sons
+Ludmila.husband = Igor
+
+var Lida = Woman(name: "Lida", animal: .slave) // wife
+me.wife = Lida
+me.wife
+Lida.husband
+
+
+// создаю брата и сестру
+var Anya = Woman(name: "Anya") // sis
+me.sisters = [Anya]
+Anya.brothers
+var Petya = Man(name: "Petya") // bro
+me.brothers = [Petya]
+Petya.brothers
+Petya.sisters = [Anya]
+Anya.brothers
+
+
+// создаю разных других родственников
+var LudmilaSis = Woman(name: "LudmilaSis")
+Ludmila.sisters = [LudmilaSis]
+Ludmila.sisters
+LudmilaSis.sisters
+
+var IgorSis = Woman(name: "IgorSis")
+IgorSis.brothers = [Igor]
+IgorSis.brothers
+Igor.sisters
+
+
+
+var LudmilaSisHusb = Man(name: "LudmilaSisHusb", animal: .parrot)
+LudmilaSisHusb.wife = LudmilaSis
+LudmilaSis.husband
+LudmilaSisHusb.wife
+
+var IgorSisHusb = Man(name: "IgorSisHusb")
+IgorSisHusb.wife = IgorSis
+IgorSis.husband
+IgorSisHusb.wife
+
+var LudmilaSisChild1 = Man(name: "LudmilaSisChild1")
+LudmilaSisChild1.mother = LudmilaSis
+LudmilaSisChild1.father = LudmilaSisHusb
+
+var LudmilaSisChild2 = Woman(name: "LudmilaSisChild2")
+LudmilaSisChild2.mother = LudmilaSis
+LudmilaSisChild2.father = LudmilaSisHusb
+LudmilaSis.sons
+LudmilaSisHusb.sons
+
+
+var IgorSisChild1 = Man(name: "IgorSisChild1")
+var IgorSisChild2 = Woman(name: "IgorSisChild2")
+IgorSisChild1.father = IgorSisHusb
+IgorSisChild1.mother = IgorSis
+
+var Alya = Woman(name: "Alya") // mamina mama
+var Slava = Man(name: "Slava") // mamin papa
+Ludmila.mother = Alya
+Ludmila.father = Slava
+
+
+var Evgeniya = Woman(name: "Evgeniya", animal: .dog) // papina mama
+var Evgeniy = Man(name: "Evgeniy") // papin papa
+Igor.mother = Evgeniya
+Igor.father = Evgeniy
+
+
+var Valera = Man(name: "Valera") // brat Alya
+Valera.sisters = [Alya]
+var Vasya = Man(name: "Vasya") // son Valera
+Vasya.father = Valera
+Alya.brothers
+
+var Lidiia = Woman(name: "Lidiia Tihonovna") // Alyas mama
+Alya.mother = Lidiia
+Valera.mother = Lidiia
+var Lisa = Woman(name: "Lisa") // Lidiias sis
+Lisa.sisters = [Lidiia]
+var Nastya = Woman(name: "Nastya") // Lisas daugter
+Nastya.mother = Lisa
+var Kostya = Man(name: "Kostya") // Nastyas son
+Kostya.mother = Nastya
+
+
+//подсчеты
+// как много братьев у меня?
+me.brothers?.count
+
+// как много двоюродных братьев у меня?
+var dvoyorodnie = 0
+
+if me.mother?.sisters != nil {
+    for mothersister in me.mother!.sisters! {
+        let value = mothersister.sons?.count ?? 0
+        dvoyorodnie += value
+        let value2 = mothersister.daughters?.count ?? 0
+        dvoyorodnie += value2
+    }
+}
+if me.mother?.brothers != nil {
+    for mothersister in me.mother!.brothers! {
+        let value = mothersister.sons?.count ?? 0
+        dvoyorodnie += value
+        let value2 = mothersister.daughters?.count ?? 0
+        dvoyorodnie += value2
+    }
+}
+
+if me.father?.sisters != nil {
+    for mothersister in me.father!.sisters! {
+        let value = mothersister.sons?.count ?? 0
+        dvoyorodnie += value
+        let value2 = mothersister.daughters?.count ?? 0
+        dvoyorodnie += value2
+    }
+}
+if me.father?.brothers != nil {
+    for mothersister in me.father!.brothers! {
+        let value = mothersister.sons?.count ?? 0
+        dvoyorodnie += value
+        let value2 = mothersister.daughters?.count ?? 0
+        dvoyorodnie += value2
+    }
+}
+print("Двоюродных братьев у меня \(dvoyorodnie)-e человек \n \n ************* \n \n")
+
+
+// У Мужчин сделать метод Двигать_диван, у Женщин Дать_указание (двигать_диван). Всё должно работать как и ранее.
+// Всех этих людей положить в массив Семья, пройти по массиву посчитать количество Мужчин и Женщин, для каждого Мужчины вызвать метод Двигать_диван, для каждой женщины Дать_указание.
+
+
+let family : [Human] = [me, Ludmila, Igor, Lida, Anya, Petya, LudmilaSis, IgorSis, LudmilaSisHusb, IgorSisHusb, LudmilaSisChild1, LudmilaSisChild2, IgorSisChild1, IgorSisChild2, Evgeniya, Evgeniy, Valera, Vasya, Lidiia, Lisa, Nastya, Kostya]
+
+
+var manCounter = 0
+var womanCounter = 0
+
+for member in family {
+    if member is Man {
+        manCounter += 1
+    } else if let woman = member as? Woman {
+        womanCounter += 1
+        woman.tellToHusband()
+    }
+}
+
+print(" \n \n ************* \n \n")
+
+
+// Когда проходим по массиву животных, каждый представитель вида животных должен издать свой звук.
+
+
+
+// Раздать некоторым людям домашних животных. Пройти по всему массиву людей. Проверить каждого человека на наличие питомца, если такой есть - добавлять всех животных в массив животных. Посчитать сколько каких животных в этом массиве. Вся эта живность должна быть унаследована от класса Животные. У всех животных должен быть метод Издать_звук(крик) и у каждого дочернего класса этот метод переопределен на свой, т.е. каждое животное издаёт свой звук.
+
+var animalsInFamily : [Animals] = []
+
+for member in family {
+    if member.animal != nil {
+        animalsInFamily.append(member.animal!)
+    }
+}
+
+print ("my family own \(animalsInFamily.count) animals \n")
+
+for member in family {
+    if member.animal != nil {
+        print("\(member.name) has animal, it said «\(member.animal!.rawValue)»")
+    }
+}
