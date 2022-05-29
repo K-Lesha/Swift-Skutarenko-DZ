@@ -1,0 +1,119 @@
+    // MARK: ДЗ
+
+extension Int {
+    
+    // 1. Создайте расширение для Int с пропертисами isNegative, isPositive, bool
+    var isNegative: Bool {
+        return self < 0
+    }
+    
+    var isPositive : Bool {
+        return !isNegative
+    }
+    
+    var bool : Bool? {
+        if self == 1 {
+            return true
+        } else if self == 0 {
+            return false
+        } else {
+            return nil
+        }
+    }
+    
+    // 2. Добавьте проперти, которое возвращает количество символов в числе
+    var digitsCount : Int {
+        return String(self).count
+    }
+    
+    // 3. Добавьте сабскрипт, который возвращает символ числа по индексу:
+    subscript (index: Int) -> Int? {
+        var tempArray: [String] = []
+        
+        for ch in String(self) {
+            tempArray.append(String(ch))
+        }
+        
+        if Int(tempArray[index]) != nil {
+            return  Int(tempArray[index])
+        } else {
+            return nil
+        }
+    }
+}
+
+let b = 1
+b.isNegative
+b.isPositive
+b.bool
+
+let c = 21344
+c.digitsCount
+c[2]
+
+
+
+extension String {
+    
+    // печать и добавление буквы по индексу
+    subscript (index: Int) -> String {
+        get {
+            let nesseryIndex = self.index(self.startIndex, offsetBy: index)
+            return String(self[nesseryIndex])
+        }
+        set {
+            self.remove(at: self.index(self.startIndex, offsetBy: index))
+            self.insert(contentsOf: newValue, at: self.index(self.startIndex, offsetBy: index))
+        }
+    }
+    
+    // 4. Расширить String, чтобы принимал сабскрипт вида s[0...3] и мог также устанавливать значения используя его
+    subscript (range: ClosedRange<Int>) -> String {
+        get {
+            var tempString = ""
+            for ch in range {
+                tempString.append(self[ch])
+            }
+            return tempString
+        }
+        set {
+            for _ in range {
+                self.remove(at: self.index(self.startIndex, offsetBy: range.first!))
+            }
+
+            self.insert(contentsOf: newValue, at: self.index(self.startIndex, offsetBy: range.first!))
+
+        }
+    }
+    
+    // 5. Добавить стрингу метод truncate, чтобы отрезал лишние символы и , если таковые были, заменял их на троеточие:
+    // let s = "Hi hi hi"
+    // s.truncate(4) // Hi h...
+    // s.truncate(10) // Hi hi hi
+    
+    func truncate (_ index: Int) -> String {
+        var myString = self
+        if index >= myString.count {
+            return self
+        } else {
+            let range = myString.index(myString.endIndex, offsetBy: -index)..<myString.endIndex
+            myString.removeSubrange(range)
+            return myString + "..."
+        }
+    }
+    
+}
+
+
+var s = "Hi hi hi"
+
+
+s[1]
+s[1] = "I"
+s[1] = "IO"
+s[1...2] = "IOIOIOI"
+s[1...7] = "i"
+s
+
+s.truncate(4)
+s.truncate(10)
