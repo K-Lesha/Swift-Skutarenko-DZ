@@ -1,0 +1,209 @@
+
+
+// 1. Для нашей структуры Point перегрузить операторы: -, -=, prefix —, postfix —, /, /=, *=
+
+struct Point {
+    var x : Int
+    var y : Int
+}
+
+var p1 = Point(x: 2, y: 3)
+var p2 = Point(x: 3, y: 5)
+
+
+func - (a: Point, b: Point) -> Point {
+    return Point(x: a.x - b.x, y: a.y - b.y)
+}
+var p3 = p1 - p2
+
+func -= (a: inout Point, b: Point) -> Point {
+    a = a - b
+    return a
+}
+
+p1 -= p2
+
+p1 = Point(x: 2, y: 3)
+p2 = Point(x: 3, y: 5)
+
+
+prefix func -- (a: inout Point) -> Point {
+    a.x -= 1
+    a.y -= 1
+    return a
+}
+--p1
+
+postfix func -- (a: inout Point) -> Point {
+    let b = a
+    --a
+    return b
+}
+p1--
+p1
+
+
+p1 = Point(x: 10, y: 10)
+p2 = Point(x: 5, y: 5)
+
+func / (a: Point, b: Point) -> Point {
+    return Point(x: a.x / b.x, y: a.y / b.y)
+}
+var p4 = p1 / p2
+
+func /= (a: inout Point, b: Point) -> Point {
+    a = a / b
+    return a
+}
+
+p1 /= p2
+
+func * (a: Point, b: Point) -> Point {
+    return Point(x: a.x * b.x, y: a.y * b.y)
+}
+
+func *= (a: inout Point, b: Point) -> Point {
+    a = a * b
+    return a
+}
+p1 * p2
+
+p1 *= p2
+
+
+
+// 2. Создать структуру Rect, аналог CGRect, содержащую структуру Size и Point. Перегрузить операторы +, +=, -, -= для этой структуры.
+
+struct Size {
+    var wide : Double
+    var lenght : Double
+}
+
+
+struct Rect {
+    var size : Size
+    var point : Point
+}
+
+var rect1 = Rect(size: Size(wide: 5, lenght: 10), point: Point(x: 3, y: 2))
+var rect2 = Rect(size: Size(wide: 10, lenght: 5), point: Point(x: 5, y: 8))
+
+
+// при сложении прямоугольников будет пропорционально увеличена общая площадь первого прямоугольника за счет увеличения длин сторон
+
+func + (a: Size, b: Size) -> Size {
+    let S1 = a.lenght * a.wide
+    let S2 = b.lenght * b.wide
+    let S3 = S1 + S2
+    
+    let newWide = S3 / ((a.wide + a.lenght) / 1.5)
+    let newLenght = S3 / newWide
+    
+    return Size(wide: newWide, lenght: newLenght)
+}
+
+func + (a: Rect, b: Rect) -> Rect {
+    return Rect(size: a.size + b.size, point: a.point)
+}
+
+func += (a: inout Rect, b: Rect) -> Rect {
+    a = a + b
+    return a
+}
+
+let rect3 = rect1 + rect2
+rect1 += rect2
+
+// при вычитании прямоугольников будет пропорционально увеличена общая площадь первого прямоугольника за счет уменьшения длин сторон
+
+func - (a: Size, b: Size) -> Size {
+    let S1 = a.lenght * a.wide
+    let S2 = b.lenght * b.wide
+    let S3 = S1 - S2
+    
+    let newWide = S3 / ((a.wide + a.lenght) / 1.5)
+    let newLenght = S3 / newWide
+    
+    return Size(wide: newWide, lenght: newLenght)
+}
+
+func - (a: Rect, b: Rect) -> Rect {
+    return Rect(size: a.size - b.size, point: a.point)
+}
+
+func -= (a: inout Rect, b: Rect) -> Rect {
+    a = a - b
+    return a
+}
+
+
+var rect4 = rect1 - rect2
+rect1 -= rect2
+
+
+
+// 3. Перегрузить оператор + и += для String, но второй аргумент должен быть Int
+
+var s = "Hello, World"
+
+func -= (s1: inout String, s2: String) {
+    let set = NSCharacterSet(charactersIn: s2)
+    let components = s1.components(separatedBy: set as CharacterSet)
+    s1 = components.joined(separator: "")
+}
+
+s -= "lo"
+s
+s -= "H"
+s
+s = "hi"
+
+func -= (s1: inout String, int: Int) {
+    s1 -= String(int)
+}
+
+func += (s1: inout String, int: Int) {
+    s1 += " "
+    s1 += String(int)
+}
+
+func + (s1: String, int: Int) -> String {
+    return s1 + " " + String(int)
+}
+
+let string2 = s + 53
+s += 53
+
+
+
+// 4. Создать свой оператор, который будет принимать 2 String и в первом аргументе, при совпадении буквы с вторым аргументом, менять совпадения на заглавные буквы
+
+
+infix operator %%
+infix operator %%%
+
+func %% (s1: inout String, ch: Character) {
+    var tempString = ""
+    
+    for letter in s1  {
+        switch letter {
+        case ch: tempString.append(String(ch).uppercased())
+        default: tempString.append(letter)
+        }
+    }
+    s1 = tempString
+}
+
+func %%% (s1: inout String, s2: String) {
+    for character in s2 {
+        s1 %% character
+    }
+}
+
+
+
+s = "Hello, World!"
+
+//s %% "r"
+s %%% "rolde"
+s
