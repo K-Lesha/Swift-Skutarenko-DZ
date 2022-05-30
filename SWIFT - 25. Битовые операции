@@ -1,0 +1,67 @@
+// 1. Расширьте енум из урока и добавьте в него метод, помогающий установить соответствующий бит в переданную маску и метод, помогающий его прочитать. Эти методы должны принимать и возвращать маску, либо принимать адрес маски и менять его
+
+enum CheckList : UInt8 {
+    case Bread =    0b00000001
+    case Chicken =  0b00000010
+    case Apples =   0b00000100
+    case Pears =    0b00001000
+    
+    // метод принимает маску и говорит установлено ли число или нет
+    static func isBought (product: CheckList, inList list: UInt8) -> Bool {
+        
+        let check = product.rawValue & list
+        
+        if check == 0b00000000 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    static func addToList (product: CheckList, inList list: inout UInt8) {
+        list = list | product.rawValue
+    }
+    
+    static func removeFromList (product: CheckList, inList list: inout UInt8) {
+        list = list ^ product.rawValue
+    }
+
+}
+
+
+var thingsIBought : UInt8 = 0b00001110
+
+CheckList.isBought(product: .Chicken, inList: thingsIBought) //true
+CheckList.isBought(product: .Apples, inList: thingsIBought) //true
+CheckList.isBought(product: .Pears, inList: thingsIBought) //true
+CheckList.isBought(product: .Bread, inList: thingsIBought) // false
+thingsIBought.binary()
+
+// добавляем в купленное
+CheckList.addToList(product: .Bread, inList: &thingsIBought)
+CheckList.isBought(product: .Bread, inList: thingsIBought) // true
+thingsIBought.binary()
+
+// убираем из купленного
+CheckList.removeFromList(product: .Pears, inList: &thingsIBought)
+CheckList.isBought(product: .Pears, inList: thingsIBought) //false
+thingsIBought.binary()
+
+
+// 2. Создать цикл, который будет выводить 1 байтное число с одним установленным битом в такой последовательности, чтобы в консоли получилась вертикальная синусоида
+
+var firstMove : UInt8 = 0b00000001
+
+    // количество повторений завист от диапазона в фор ин
+for _ in 1...8 {
+    repeat {
+        firstMove = firstMove << 1
+        print(firstMove.binary())
+    } while firstMove != 0b10000000
+
+    repeat {
+        firstMove = firstMove >> 1
+        print(firstMove.binary())
+    } while firstMove != 0b00000001
+        
+}
