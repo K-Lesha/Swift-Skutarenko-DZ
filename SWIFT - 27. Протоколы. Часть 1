@@ -1,0 +1,156 @@
+
+// MARK: ДЗ
+
+// 1. Объявить протокол Food, который будет иметь проперти name (только чтение) и метод taste(), который будет выводить текст со вкусовыми ощущениями
+
+// 2. Все продукты разных типов, которые вы принесли из супермаркета, находятся в сумке (массив) и все, как ни странно, реализуют протокол Food. Вам нужно пройтись по сумке, назвать предмет и откусить кусочек. Можете отсортировать продукты до имени. Используйте для этого отдельную функцию, которая принимает массив продуктов
+
+   
+
+protocol Food {
+    var name : String {get}
+    var order : Int {get}
+    var suborder : Int? {get}
+    func taste()
+}
+
+protocol Storable {
+    var expired : Bool {get}
+    var daysToExpire : Date {get}
+    
+}
+
+struct Soup : Food, Storable {
+    var name: String
+    var order : Int = 1
+    var suborder : Int? = nil
+    func taste() {
+        print("\(name) is liquid")
+    }
+    var expired: Bool
+    var daysToExpire : Date
+}
+
+struct Pork : Food, Storable {
+    var name: String
+    var order : Int = 2
+    var suborder : Int? = 1
+    func taste() {
+        print("\(name) tastes very healthy")
+    }
+    var expired: Bool
+    var daysToExpire : Date
+}
+
+struct Meat : Food, Storable {
+    var name: String
+    var order : Int = 2
+    var suborder : Int? = 2
+    func taste() {
+        print("\(name) is meat")
+    }
+    var expired: Bool
+    var daysToExpire : Date
+}
+
+struct Sweet : Food {
+    var name : String
+    var order : Int = 3
+    var suborder : Int? = nil
+    func taste() {
+        print("\(name) tastes very sweet")
+    }
+}
+
+struct Fruit : Food {
+    var name : String
+    var order : Int = 4
+    var suborder : Int? = nil
+    func taste() {
+        print("\(name) are very fresh")
+    }
+
+}
+
+var soup1 = Soup(name: "miso soup", expired: false, daysToExpire: Date(timeIntervalSinceNow: 2000000))
+var soup2 = Soup(name: "borsch", expired: true, daysToExpire: Date(timeIntervalSinceNow: -10))
+var pork = Pork(name: "buckwheat", expired: false, daysToExpire: Date(timeIntervalSinceNow: 300000))
+var chicken = Meat(name: "chicken", expired: true, daysToExpire: Date(timeIntervalSinceNow: -20))
+var beef = Meat(name: "beef", expired: false, daysToExpire: Date(timeIntervalSinceNow: 20000))
+var sweet1 = Sweet(name: "nutella")
+var sweet2 = Sweet(name: "cookies")
+var fruit1 = Fruit(name: "apples")
+var fruit2 = Fruit(name: "oranges")
+var fruit3 = Fruit(name: "peaches")
+
+var bag : [Food] = [soup1, sweet1, chicken, soup2, fruit3, pork, sweet2, fruit1, beef, fruit2]
+
+func tasteEveryProduct (in array: [Food]) {
+    let tempArray = array.sorted { a, b in
+        if a.order == b.order && a.suborder != nil && b.suborder != nil {
+            return a.suborder! < b.suborder!
+        } else if a.order == b.order && a.suborder == nil && b.suborder == nil {
+            return a.name < b.name
+        } else {
+            return a.order < b.order
+        }
+    }
+    
+    print("\n  let me taste products from my bag:")
+    for value in tempArray {
+        value.taste()
+    }
+}
+
+tasteEveryProduct(in: bag)
+
+// 3. Некоторые продукты могут испортиться, если их не положить в холодильник. Создайте новый протокол Storable, он наследуется от протокола Food и содержит еще булевую проперти - expired. У некоторых продуктов замените Food на Storable. Теперь пройдитесь по всем продуктам и, если продукт надо хранить в холодильнике, то перенесите его туда, но только если продукт не испорчен уже, иначе просто избавьтесь от него. Используйте функцию для вывода продуктов для вывода содержимого холодильника
+
+var freege : [Storable] = []
+var trash : [Food] = []
+var shelf : [Food] = []
+
+for value in bag {
+    switch value {
+    case let a as Food & Storable where a.expired == false: freege.append(a)
+    case let a as Food & Storable where a.expired == true: trash.append(a)
+    default: shelf.append(value)
+    }
+    
+}
+
+print("\n  producs in the freege:")
+for value in freege {
+    if let value = value as? Food & Storable {
+        print(value.name)
+    }
+}
+
+print("\n  producs in the trash:")
+for value in trash{
+    print(value.name)
+}
+print("\n  producs on the shelf:")
+for value in shelf{
+    print(value.name)
+}
+
+// 4. Добавьте проперти daysToExpire в протокол Storable. Отсортируйте массив продуктов в холодильнике. Сначала пусть идут те, кто быстрее портятся. Если срок совпадает, то сортируйте по имени.
+
+
+func sortProducts(inThe freege: inout [Storable]) {
+    freege = freege.sorted(by: { a, b in
+        a.daysToExpire < b.daysToExpire
+    })
+    print("\n  product in the freege with dates of expire:")
+    for (index, value) in freege.enumerated() {
+        if let value = value as? Food & Storable  {
+            print("The \(value.name) is number \(index + 1), date of expire: \(value.daysToExpire)")
+        }
+    }
+}
+sortProducts(inThe: &freege)
+
+// 5. Не все, что мы кладем в холодильник, является едой. Поэтому сделайте так, чтобы Storable не наследовался от Food. Мы по прежнему приносим еду домой, но некоторые продукты реализуют теперь 2 протокола. Холодильник принимает только те продукты, которые еще и Storable. функция сортировки должна по прежнему работать.
+
+print("\n done")
